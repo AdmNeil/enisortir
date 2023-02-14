@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class Participant implements UserInterface, PasswordAuthenticatedUserInterface
+class Participant implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -59,10 +59,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $sortiesParticipant;
 
+    #[ORM\Column]
+    private ?bool $isBlocked = null;
+
     public function __construct()
     {
         $this->sortiesOrganisateur = new ArrayCollection();
         $this->sortiesParticipant = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->username;
     }
 
     public function getId(): ?int
@@ -98,6 +106,15 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
+
+        if($this->isBlocked) {
+            $roles[] = 'ROLE_NOT';
+        }
+
+        if($this->isAdmin) {
+            $roles[] = 'ROLE_ADMIN';
+        }
+
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
@@ -272,6 +289,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->sortiesParticipant->removeElement($sortiesParticipant)) {
             $sortiesParticipant->removeParticipant($this);
         }
+
+        return $this;
+    }
+
+    public function isIsBlocked(): ?bool
+    {
+        return $this->isBlocked;
+    }
+
+    public function setIsBlocked(bool $isBlocked): self
+    {
+        $this->isBlocked = $isBlocked;
 
         return $this;
     }
