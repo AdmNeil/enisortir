@@ -1,21 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{{ app.request.server.get('NAME_SITE') }}{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-       <link rel="stylesheet" href="{{ asset('/css/all.css') }}">
+        <link rel="stylesheet" href="{{ asset('/css/all.css') }}">
     </head>
     <body>
     <nav>
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="#">Villes</a>
-            <a href="#">Sites</a>
-        {% endif %}
-        <a href="#">Accueil</a>
-        <a href="#">Mon Profil</a>
-        <a href="{{path('app_logout')}}">Se déconnecter</a>
+        <div>
+            <h1>{{ app.request.server.get('NAME_SITE') }}</h1>
+        </div>
+        <div class="nav-container">
+            <div>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin') }}">Admin</a>
+                {% endif %}
+            </div>
+            <div>
+                <a href="{{ path('home_index') }}">Accueil</a>
+            </div>
+            <div>
+                <a href="#">Mon Profil</a>
+            </div>
+            {% if app.user %}
+                <div>
+                    <a href="{{path('app_logout')}}">Se déconnecter</a>
+                </div>
+            {% endif %}
+        </div>
     </nav>
+    <main>
         {% block body %}{% endblock %}
+    </main>
+    <div class="info">
+        {% for title, messages in app.flashes %}
+            <div class="{{ title }}">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <script src="{{ asset('/js/script.js') }}"></script>
     </body>
 </html>
