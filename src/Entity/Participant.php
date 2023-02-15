@@ -61,6 +61,9 @@ class Participant implements UserInterface
 
     #[ORM\Column]
     private ?bool $isBlocked = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $urlPhoto = null;
 
     public function __construct()
     {
@@ -301,6 +304,15 @@ class Participant implements UserInterface
     public function setIsBlocked(bool $isBlocked): self
     {
         $this->isBlocked = $isBlocked;
+
+    public function getUrlPhoto(): ?string
+    {
+        return $this->urlPhoto;
+    }
+
+    public function setUrlPhoto(?string $urlPhoto): self
+    {
+        $this->urlPhoto = $urlPhoto;
 
         return $this;
     }

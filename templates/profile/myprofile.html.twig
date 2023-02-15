@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Mon profil
+{% endblock %}
+
+
+{% block body %}
+       <h1> {{ app.user.username }} </h1>
+    <br>
+    <div> Prénom:  {{ app.user.prenom }}</div>
+    <br>
+    <div>Nom: {{ app.user.nom }} </div>
+    <br>
+    <div>Téléphone: {{ app.user.telephone }} </div>
+    <br>
+    <div>Email: {{ app.user.mail }}</div>
+    <br>
+{#    <div>Mot de passe: {{ app.user.password }}</div>#}
+{#    <br>#}
+{#   <div>Ville de rattachement: {{ app.user.site }}</div>#}
+{#    <br>#}
+    <div>Ma photo:  {{ app.user.urlPhoto }}</div>
+    <br>
+    <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"></a>
+    <a href="{{ path('home_index') }}"><input type="button" value="Retour"></a>
+
+{% endblock %}
+
+
