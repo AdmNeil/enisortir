@@ -26,6 +26,11 @@ class Etat
         $this->sorties = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->libelle;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

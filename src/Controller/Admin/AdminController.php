@@ -3,6 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Participant;
+use App\Entity\Site;
+use App\Entity\Sortie;
+use App\Entity\Ville;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -42,13 +45,22 @@ class AdminController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::section('Blog');
         yield MenuItem::linkToUrl('Home', 'fa fa-home', '/');
 
-        yield MenuItem::section('User');
+        yield MenuItem::section('Option', 'fa fa-gears');
+
         yield MenuItem::subMenu('Participant', 'fas fa-bar')->setSubItems([
             MenuItem::linkToCrud('Create Participant', 'fas fa-plus-circle', Participant::class)->setAction(Crud::PAGE_NEW),
             MenuItem::linkToCrud('Show Participant', 'fas fa-eye', Participant::class)
+        ]);
+
+        yield MenuItem::subMenu('Sorties', 'fas fa-bar')->setSubItems([
+            MenuItem::linkToCrud('Show Sortie', 'fas fa-eye', Sortie::class)
+        ]);
+
+        yield MenuItem::subMenu('Lieux', 'fas fa-bar')->setSubItems([
+            MenuItem::linkToCrud('Show Site', 'fas fa-eye', Site::class),
+            MenuItem::linkToCrud('Show Sortie', 'fas fa-eye', Ville::class)
         ]);
     }
 }

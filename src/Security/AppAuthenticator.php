@@ -44,6 +44,13 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        /*$user = $token->getUser();
+
+        if ($user && in_array('ROLE_NOT', $user->getRoles(), true)) {
+            //$this->addFlash('error', 'Vous avez été bloquer un administrateur');
+            return new RedirectResponse($this->urlGenerator->generate('app_logout'));
+        }*/
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
