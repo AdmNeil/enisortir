@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Participant;
 use App\Form\ProfileType;
 use App\Repository\ParticipantRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,13 +16,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfileController extends AbstractController
 {
 
-    #[Route('/myprofile/{id}', name: '_myprofile')]
+    #[Route('/@me', name: '_myprofile')]
+    //Afficher mon profil quand je suis connecté
     public function myProfile(
-        int $id,
         ParticipantRepository $participantRepository,
     ): Response
     {
-        $participant = $participantRepository->findOneBy(["id"=>$id]);
+        $participant = $participantRepository->findOneBy(["username"=>$this->getUser()->getUserIdentifier()]);
         return $this->render(
             'profile/myprofile.html.twig',
             compact('participant')
@@ -32,17 +31,19 @@ class ProfileController extends AbstractController
 
 
     #[Route('/update', name: '_update')]
+    //Modifier mes informations de profil
     public function update(
         EntityManagerInterface $em,
         Request $request,
+        ParticipantRepository $participantRepository,
     ): Response
     {
-        $participant = new Participant();
+        $participant = $participantRepository->findOneBy(["username"=>$this->getUser()->getUserIdentifier()]);
         $participantForm = $this->createForm(ProfileType::class, $participant);
         $participantForm->handleRequest($request);
 
         if($participantForm->isSubmitted() && $participantForm->isValid()){
-            $em->persist($participantForm);
+            $em->persist($participant);
             $em->flush();
             return $this->render('profile/myprofile.html.twig');
         }
@@ -53,16 +54,4 @@ class ProfileController extends AbstractController
         );
     }
 
-//    #[Route('/{id}', name: '_detail')]
-//    public function detail(
-//        int $id,
-//        ParticipantRepository $participantRepository,
-//    ): Response
-//    {
-//        $participant = $participantRepository->findOneBy(["id"=>$id]);
-//        return $this->render(
-//            'profile/detail.html.twig',
-//            compact('participant')
-//        );
-//    }
 }

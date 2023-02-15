@@ -10,7 +10,7 @@
         {{ form_start(participantForm) }}
         {{ form_widget(participantForm) }}
         <input type="submit" value="Enregistrer">
-        <a href="#"><input type="button" value="Annuler"></a>
+        <a href="{{ path('profile_myprofile')}}"><input type="button" value="Annuler"></a>
        {{ form_end(participantForm) }}
     </div>
 {% endblock %}
