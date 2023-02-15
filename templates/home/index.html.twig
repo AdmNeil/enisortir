@@ -8,50 +8,55 @@
     <div>Participant : {{ app.user.prenom }} {{ app.user.nom }}</div>
     <h1>Filtrer les sorties</h1>
 
-    {{ form }}
-
-{#    <form action="" method="post">#}
-{#        <div>#}
-{#            <label for="site">Site :</label>#}
-{#            <select name="site" id="site">#}
-{#                {% for site in sites %}#}
-{#                    {% if site == app.user.site %}#}
-{#                        <option value="{{ site.id }}" selected>{{ site.nom }} ( {{ site.id }} )</option>#}
-{#                    {% else %}#}
-{#                        <option value="{{ site.id }}">{{ site.nom }} ( {{ site.id }} )</option>#}
-{#                    {% endif %}#}
-{#                {% endfor %}#}
-{#             </select>#}
-{#        </div>#}
-{#        <div>#}
-{#            <label for="filtreNom">Le nom de la sortie contient :</label>#}
-{#            <input type = "search" name="filtreNom" id="filtreNom" placeholder="search" size="20">#}
-{#        </div>#}
-{#        <div>#}
-{#            <label for="filtreDateMin">Entre</label>#}
-{#            <input type="date" name="filtreDateMin" id="filtreDateMin">#}
-{#            <label for="filtreDateMax"> et </label>#}
-{#            <input type="date" name="filtreDateMax" id="filtreDateMax">#}
-{#        </div>#}
-{#        <div>#}
-{#            <input type="checkbox" name="cocheOrganisateur" id="cocheOrganisateur">#}
-{#            <label for="cocheOrganisateur">Sorties dont je suis l'organisateur(trice)</label>#}
-{#        </div>#}
-{#        <div>#}
-{#            <input type="checkbox" name="cocheInscrit" id="cocheInscrit">#}
-{#            <label for="cocheInscrit">Sorties auxquelles je suis inscrit(e)</label>#}
-{#        </div>#}
-{#        <div>#}
-{#            <input type="checkbox" name="cocheNonInscrit" id="cocheNonInscrit">#}
-{#            <label for="cocheNonInscrit">Sorties auxquelles je ne suis pas inscrit(e)</label>#}
-{#        </div>#}
-{#        <div>#}
-{#            <input type="checkbox" name="cochePassees" id="cochePasses">#}
-{#            <label for="cochePassees">Sorties passées</label>#}
-{#        </div>#}
-{#        <input type="submit" value="Rechercher">#}
-
-{#    </form>#}
+    {{ form_start(filtreHomeForm) }}
+    {{ form_widget(filtreHomeForm) }}
+    <div>
+        <label for="filtreNom">Le nom de la sortie contient :</label>
+        <input type = "search" name="filtreNom" id="filtreNom"
+               value="{{ filtreNom!='' ? filtreNom : '' }}" placeholder="search" size="20">
+    </div>
+    <div>
+        <label for="filtreDateMin">Entre</label>
+        <input type="date" name="filtreDateMin" id="filtreDateMin"
+               value="{{ filtreDateMin!='' ? filtreDateMin : '' }}">
+        <label for="filtreDateMax"> et </label>
+        <input type="date" name="filtreDateMax" id="filtreDateMax"
+               value="{{ filtreDateMax!='' ? filtreDateMax : '' }}">
+    </div>
+    <div>
+        {% if cocheOrganisateur %}
+            <input type="checkbox" name="cocheOrganisateur" id="cocheOrganisateur" checked>
+        {% else %}
+            <input type="checkbox" name="cocheOrganisateur" id="cocheOrganisateur">
+        {% endif %}
+        <label for="cocheOrganisateur">Sorties dont je suis l'organisateur(trice)</label>
+    </div>
+    <div>
+        {% if cocheInscrit %}
+            <input type="checkbox" name="cocheInscrit" id="cocheInscrit" checked>
+        {% else %}
+            <input type="checkbox" name="cocheInscrit" id="cocheInscrit" >
+        {% endif %}
+        <label for="cocheInscrit">Sorties auxquelles je suis inscrit(e)</label>
+    </div>
+    <div>
+        {% if cocheNonInscrit %}
+            <input type="checkbox" name="cocheNonInscrit" id="cocheNonInscrit" checked>
+        {% else %}
+            <input type="checkbox" name="cocheNonInscrit" id="cocheNonInscrit">
+        {% endif %}
+        <label for="cocheNonInscrit">Sorties auxquelles je ne suis pas inscrit(e)</label>
+    </div>
+    <div>
+        {% if cochePassees %}
+            <input type="checkbox" name="cochePassees" id="cochePassees" checked>
+        {% else %}
+            <input type="checkbox" name="cochePassees" id="cochePassees">
+        {% endif %}
+        <label for="cochePassees">Sorties passées</label>
+    </div>
+    <button>Rechercher</button>
+    {{ form_end(filtreHomeForm) }}
 
     {% if sorties is not empty  %}
         <h2>Résultats</h2>
@@ -65,6 +70,7 @@
             <div>Organisateur</div>
             <div>Actions</div>
         </article>
+        <hr>
         {% for sortie in sorties %}
             {% set isInscrit = false %}
             <article>
@@ -102,10 +108,11 @@
                     {% endif %}
                 </div>
             </article>
+            <hr>
         {% endfor %}
     {% else %}
         <h2>Aucune sortie ne correspond à vos critères.</h2>
     {% endif %}
-
+    <button><a href="#">Créer une sortie</a></button>
 
 {% endblock %}
