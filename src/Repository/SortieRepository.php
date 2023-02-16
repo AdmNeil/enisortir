@@ -8,9 +8,6 @@ use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
-use function PHPUnit\Framework\isEmpty;
 
 /**
  * @extends ServiceEntityRepository<Sortie>
@@ -65,13 +62,15 @@ class SortieRepository extends ServiceEntityRepository
         //test si site existant
         if ($site->getId() > 0) {
             $queryBuilder->andWhere('sortie.site = :site')
-                         ->setParameter('site', $site);
+                         ->setParameter('site', $site)
+                         //sorties archivées non consultables
+                         ->andWhere('sortie.etat <> :etat')
+                         ->setParameter('etat', 7);
         }
         if ($filtreNom !== '') {
             $queryBuilder->andWhere('sortie.nom like :nom')
                          ->setParameter('nom', '%'.$filtreNom.'%');
         }
-
         if ($filtreDates) {
             $queryBuilder->andWhere('sortie.dateHeureDeb >= :dateMin')
                          ->setParameter('dateMin', $dateMin)
@@ -84,7 +83,7 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
-
+        //dump($querySorties);
         //Gestion des cases à cocher par parcours du tableau de sorties issu de la requête
         // pour construire le tableau résultat
         if ($cocheOrganisateur || $cocheInscrit || $cocheNonInscrit || $cochePassees) {

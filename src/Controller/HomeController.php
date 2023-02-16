@@ -6,15 +6,13 @@ use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\FiltreHomeType;
 use App\Repository\ParticipantRepository;
-use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Services\HomeFiltersCheck;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 #[IsGranted('ROLE_USER')]
 #[Route('/', name: 'home')]
@@ -27,10 +25,11 @@ class HomeController extends AbstractController
     public function index(
         SortieRepository      $sortieRepository,
         ParticipantRepository $participantRepository,
-        Request               $request
+        Request               $request,
+        HomeFiltersCheck      $homeFiltersCheck
     ): Response
     {
-        //initialisation des filtres "manuels" (hors filtreHomeRequest)
+        //initialisation des filtres "manuels" (hors FiltreHomeType)
         $filtreNom = '';
         $filtreDateMin = '';
         $filtreDateMax = '';
@@ -38,6 +37,10 @@ class HomeController extends AbstractController
         $cocheInscrit = false;
         $cocheNonInscrit = false;
         $cochePassees = false;
+        //initialisation du tableau servant à stocker les messages d'anomalie
+        $tabErr = ["contenuNom" => '',
+                   "datesMinMax" => '' ];
+        $yaErreur = false;
 
         //1.créer une instance de Sortie
         $sortie = new Sortie();
@@ -48,6 +51,7 @@ class HomeController extends AbstractController
         //4.traiter le formulaire
         $filtreHomeForm->handleRequest($request);
         $sorties = null;
+
         if ($filtreHomeForm->isSubmitted() && $filtreHomeForm->isValid()) {
 
             $filtreSite = $sortie->getSite();
@@ -60,29 +64,46 @@ class HomeController extends AbstractController
             $cocheNonInscrit = ($request->request->get("cocheNonInscrit") !== null);
             $cochePassees = ($request->request->get("cochePassees") !== null);
 
-            if (strlen($filtreDateMin) !== 0 && strlen($filtreDateMax) !== 0) {
-                $filtreDates = true;
-                $dateMin = new \DateTime($filtreDateMin);
-                $dateMax = new \DateTime($filtreDateMax);
+            //Appel aux méthodes de contrôle des saisies non liées à l'entité Sortie
+            $msgErr = $homeFiltersCheck->testDatesMinMax($filtreDateMin, $filtreDateMax);
+            if ($msgErr) {
+                $tabErr["datesMinMax"] = $msgErr;
             }
-            else {
-                $filtreDates = false;
-                $dateMin = new \DateTime();
-                $dateMax = new \DateTime();
+            $msgErr = $homeFiltersCheck->testContenuNom($filtreNom);
+            if ($msgErr) {
+                $tabErr["contenuNom"] = $msgErr;
+            }
+            foreach ($tabErr as $cle => $valeur) {
+                if (strlen($valeur) > 0) {
+                    $yaErreur = true;
+                }
             }
 
-            $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
-            $sorties = $sortieRepository->findAllWithFilters($filtreSite,
-                $filtreNom, $filtreDates, $dateMin, $dateMax, $utilisateur,
-                $cocheOrganisateur, $cocheInscrit, $cocheNonInscrit, $cochePassees);
+            //si pas d'erreur de saisie et Formulaire validé (pour champ Site)
+            if (!$yaErreur ) {
+                if (strlen($filtreDateMin) !== 0 && strlen($filtreDateMax) !== 0) {
+                    $filtreDates = true;
+                    $dateMin = new \DateTime($filtreDateMin);
+                    $dateMax = new \DateTime($filtreDateMax);
+                }
+                else {
+                    $filtreDates = false;
+                    $dateMin = new \DateTime();
+                    $dateMax = new \DateTime();
+                }
 
-            //$sorties = $sortieRepository->findBy([], ["dateHeureDeb" => "ASC"], null, 0);
+                $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+
+                $sorties = $sortieRepository->findAllWithFilters($filtreSite,
+                    $filtreNom, $filtreDates, $dateMin, $dateMax, $utilisateur,
+                    $cocheOrganisateur, $cocheInscrit, $cocheNonInscrit, $cochePassees);
+            }
         }
-
+dump($sorties);
         //3.envoyer le formulaire au twig
         return $this->render('home/index.html.twig',
-            compact('filtreHomeForm',
-        'filtreNom', 'filtreDateMin', 'filtreDateMax',
+            compact('filtreHomeForm', 'tabErr',
+                  'filtreNom', 'filtreDateMin', 'filtreDateMax',
                   'cocheOrganisateur', 'cocheInscrit', 'cocheNonInscrit', 'cochePassees',
                   'sorties'));
     }
