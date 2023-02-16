@@ -10,11 +10,21 @@
 
     {{ form_start(filtreHomeForm) }}
     {{ form_widget(filtreHomeForm) }}
+    {% if tabErr["contenuNom"] is not empty %}
+        <div><strong>
+            {{ tabErr["contenuNom"] }}
+        </strong></div>
+    {% endif %}
     <div>
         <label for="filtreNom">Le nom de la sortie contient :</label>
         <input type = "search" name="filtreNom" id="filtreNom"
-               value="{{ filtreNom!='' ? filtreNom : '' }}" placeholder="search" size="20">
+               value="{{ filtreNom!='' ? filtreNom : '' }}" placeholder="search" size="30">
     </div>
+    {% if tabErr["datesMinMax"] is not empty %}
+        <div><strong>
+           {{ tabErr["datesMinMax"] }}
+        </strong></div>
+    {% endif %}
     <div>
         <label for="filtreDateMin">Entre</label>
         <input type="date" name="filtreDateMin" id="filtreDateMin"
@@ -85,23 +95,27 @@
                     {% endif %}
                 {% endfor %}
                 <div>{{ isInscrit ? 'X' : '-' }}</div>
-                <div>{# <a href="{{ path('profile_show') }} "> #}
-                      <a href="#">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
+{#                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} "> #}
+                <div><a href="#">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
                 <div>
                     {% if sortie.etat.libelle == 'En création' %}
-                    {#  <a href="{{ path('activity_update') }}">#}
+                    {#  <a href="{{ path('activity_update', {'id': sortie.id}) }}"> #}
                         <a href="#">Modifier</a> -
+                    {#  <a href="{{ path('activity_publish', {'id': sortie.id}) }}"> #}
                         <a href="#">Publier</a>
                     {% else %}
                         <a href="#">Afficher</a>
                         {% if sortie.etat.libelle == 'Ouvert' %}
                             {% if isInscrit %}
+                                {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
                                 - <a href="#">Se désister</a>
                             {% else %}
+                                {# <a href="{{ path('activity_subscribe', {'id': sortie.id}) }}"> #}
                                 - <a href="#">S'inscrire</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}
-                            {% if isInscrit %}
+                        {% if isInscrit %}
+                            {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
                             - <a href="#">Se désister</a>
                             {% endif %}
                         {% endif %}
@@ -113,6 +127,9 @@
     {% else %}
         <h2>Aucune sortie ne correspond à vos critères.</h2>
     {% endif %}
-    <button><a href="#">Créer une sortie</a></button>
+    <button>
+        {#  <a href="{{ path('activity_create' }}"> #}
+        <a href="#">Créer une sortie</a>
+    </button>
 
 {% endblock %}

@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-class Participant implements UserInterface
+class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -305,6 +305,8 @@ class Participant implements UserInterface
     {
         $this->isBlocked = $isBlocked;
 
+        return $this;
+    }
     public function getUrlPhoto(): ?string
     {
         return $this->urlPhoto;
