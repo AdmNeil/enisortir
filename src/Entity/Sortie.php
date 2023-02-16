@@ -31,9 +31,6 @@ class Sortie
     #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
-    #[ORM\Column(length: 250, nullable: true)]
-    private ?string $urlPhoto = null;
-
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
@@ -122,18 +119,6 @@ class Sortie
     public function setNbInscriptionsMax(int $nbInscriptionsMax): self
     {
         $this->nbInscriptionsMax = $nbInscriptionsMax;
-
-        return $this;
-    }
-
-    public function getUrlPhoto(): ?string
-    {
-        return $this->urlPhoto;
-    }
-
-    public function setUrlPhoto(?string $urlPhoto): self
-    {
-        $this->urlPhoto = $urlPhoto;
 
         return $this;
     }

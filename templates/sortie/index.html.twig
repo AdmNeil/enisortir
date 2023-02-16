@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Sortie{% endblock %}
+
+{% block body %}
+<h1>Créer une Sortie</h1>
+
+    <div>
+        {{ form_start(sortieForm) }}
+        {{ form_row(sortieForm.nom) }}
+        {{ form_row(sortieForm.dateHeureDeb) }}
+        {{ form_row(sortieForm.dateCloture) }}
+        {{ form_row(sortieForm.nbInscriptionsMax) }}
+        {{ form_row(sortieForm.duree) }}
+        {{ form_row(sortieForm.infosSortie) }}
+    </div>
+    <div>
+        {{ form_row(sortieForm.site) }}
+        {{ form_row(villeForm.nom) }}
+        {{ form_row(lieuForm.nom) }}
+        {{ form_row(lieuForm.rue) }}
+        {{ form_row(villeForm.codePostal) }}
+        {{ form_row(lieuForm.latitude) }}
+        {{ form_row(lieuForm.longitude) }}
+        <div>
+            {{ form_row(sortieForm.saveSortie) }}
+            {{ form_row(sortieForm.publieSortie) }}
+            <a href="{{ path('home_index') }}">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(sortieForm) }}
+{% endblock %}
