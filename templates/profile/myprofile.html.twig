@@ -16,11 +16,9 @@
     <br>
     <div>Email: {{ app.user.mail }}</div>
     <br>
-{#    <div>Mot de passe: {{ app.user.password }}</div>#}
-{#    <br>#}
-{#   <div>Ville de rattachement: {{ app.user.site }}</div>#}
-{#    <br>#}
-    <div>Ma photo:  {{ app.user.urlPhoto }}</div>
+    <div> Ma photo:
+        <img src="{{ asset('/img/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
+    </div>
     <br>
     <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"></a>
     <a href="{{ path('home_index') }}"><input type="button" value="Retour"></a>

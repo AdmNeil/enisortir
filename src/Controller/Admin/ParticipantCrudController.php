@@ -9,11 +9,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ParticipantCrudController extends AbstractCrudController
 {
@@ -37,7 +39,10 @@ class ParticipantCrudController extends AbstractCrudController
             TextField::new('password')->setFormType(PasswordType::class),
             BooleanField::new('isAdmin')->setFormTypeOption('attr.checked', true),
             BooleanField::new('isActif')->setFormTypeOption('attr.checked', true),
-            BooleanField::new('isBlocked')
+            BooleanField::new('isBlocked'),
+            TextField::new('urlPhoto')->setFormType(VichImageType::class),
+            ImageField::new('photo')->setBasePath('/img')->onlyOnIndex(),
+
         ];
     }
 
