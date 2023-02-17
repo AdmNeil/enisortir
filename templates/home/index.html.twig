@@ -95,8 +95,8 @@
                     {% endif %}
                 {% endfor %}
                 <div>{{ isInscrit ? 'X' : '-' }}</div>
-{#                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} "> #}
-                <div><a href="#">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
+                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} ">
+                     {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
                 <div>
                     {% if sortie.etat.libelle == 'En création' %}
                     {#  <a href="{{ path('activity_update', {'id': sortie.id}) }}"> #}
@@ -107,11 +107,9 @@
                         <a href="#">Afficher</a>
                         {% if sortie.etat.libelle == 'Ouvert' %}
                             {% if isInscrit %}
-                                {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">Se désister</a>
+                                - <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}">Se désister</a>
                             {% else %}
-                                {# <a href="{{ path('activity_subscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">S'inscrire</a>
+                                - <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}
                         {% if isInscrit %}
