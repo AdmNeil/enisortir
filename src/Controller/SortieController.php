@@ -21,6 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
@@ -82,5 +83,24 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/index.html.twig', compact('sortieForm', 'lieuForm', 'villeForm'));
+    }
+
+
+    #[Route('/detail/{id}', name: '_detail', requirements: ['id'=>'\d+'])]
+    public function select(
+        int $id,
+        SortieRepository $sortieRepository
+    ): Response
+    {
+        $sortie = $sortieRepository->findOneBy(["id"=>$id]);
+        $etatSortie = $sortie->getEtat()->getId();
+        if( $etatSortie==1 || $etatSortie==7) {
+            $this->addFlash('error', 'Sortie non disponible.');
+            return $this->redirectToRoute('home_index');
+        }
+        return $this->render(
+            'detail.html.twig',
+            compact('sortie')
+        );
     }
 }
