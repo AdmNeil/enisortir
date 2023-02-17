@@ -3,10 +3,10 @@
 {% block title %}{{ parent() }} | Sortie{% endblock %}
 
 {% block body %}
-<h1>Créer une Sortie</h1>
-
+    <h1>Créer une Sortie</h1>
+    {{ form_start(sortieForm) }}
     <div>
-        {{ form_start(sortieForm) }}
+        {{ form_row(sortieForm._token) }}
         {{ form_row(sortieForm.nom) }}
         {{ form_row(sortieForm.dateHeureDeb) }}
         {{ form_row(sortieForm.dateCloture) }}
@@ -25,8 +25,13 @@
         <div>
             {{ form_row(sortieForm.saveSortie) }}
             {{ form_row(sortieForm.publishSortie) }}
+
+            {% if app.request.attributes.get('_route') == 'sortie_update' %}
+                {{ form_row(sortieForm.removeSortie) }}
+            {% endif %}
+
             <a href="{{ path('home_index') }}">Annuler</a>
         </div>
     </div>
-    {{ form_end(sortieForm) }}
+    {{ form_end(sortieForm, {'render_rest': false}) }}
 {% endblock %}
