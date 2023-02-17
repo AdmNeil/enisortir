@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
@@ -58,9 +59,11 @@ class AdminController extends AbstractDashboardController
             MenuItem::linkToCrud('Show Sortie', 'fas fa-eye', Sortie::class)
         ]);
 
-        yield MenuItem::subMenu('Lieux', 'fas fa-bar')->setSubItems([
+        yield MenuItem::subMenu('Endroits', 'fas fa-bar')->setSubItems([
+            MenuItem::linkToCrud('Show Lieu', 'fas fa-eye', Lieu::class),
             MenuItem::linkToCrud('Show Site', 'fas fa-eye', Site::class),
-            MenuItem::linkToCrud('Show Sortie', 'fas fa-eye', Ville::class)
+            MenuItem::linkToCrud('Show Ville', 'fas fa-eye', Ville::class),
+            MenuItem::linkToCrud('Create Ville', 'fas fa-plus-circle', Ville::class)->setAction(Crud::PAGE_NEW)
         ]);
     }
 }

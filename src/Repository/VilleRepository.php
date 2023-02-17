@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Ville;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,6 +39,35 @@ class VilleRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findFirstLine(): ?Object
+    {
+        return $this->createQueryBuilder('v')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findIfExistVille($value): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.codePostal LIKE :val')
+            ->groupBy('v.id')
+            ->setParameter('val', '%'.$value.'%')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
 
 //    /**
 //     * @return Ville[] Returns an array of Ville objects

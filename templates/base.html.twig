@@ -33,11 +33,11 @@
     <main>
         {% block body %}{% endblock %}
     </main>
-    <div class="info">
+    <div class="message">
         {% for title, messages in app.flashes %}
-            <div class="{{ title }}">
+            <div>
                 {% for message in messages %}
-                    <p>{{ message }}</p>
+                    <p class="comment {{ title }}">{{ message }}</p>
                 {% endfor %}
             </div>
         {% endfor %}
