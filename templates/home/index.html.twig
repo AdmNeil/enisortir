@@ -95,10 +95,10 @@
                     {% endif %}
                 {% endfor %}
                 <div>{{ isInscrit ? 'X' : '-' }}</div>
-{#                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} "> #}
-                <div><a href="#">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
+                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} ">
+                     {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
                 <div>
-                    {% if sortie.etat.libelle == 'En création' %}
+                    {% if sortie.etat.libelle == 'En création' and sortie.organisateur == app.user %}
                         <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a> -
                     {#  <a href="{{ path('activity_publish', {'id': sortie.id}) }}"> #}
                         <a href="#">Publier</a>
@@ -106,16 +106,13 @@
                         <a href="#">Afficher</a>
                         {% if sortie.etat.libelle == 'Ouvert' %}
                             {% if isInscrit %}
-                                {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">Se désister</a>
+                                - <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}">Se désister</a>
                             {% else %}
-                                {# <a href="{{ path('activity_subscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">S'inscrire</a>
+                                - <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}
                         {% if isInscrit %}
-                            {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
-                            - <a href="#">Se désister</a>
+                            - <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}">Se désister</a>
                             {% endif %}
                         {% endif %}
                     {% endif %}
@@ -127,8 +124,7 @@
         <h2>Aucune sortie ne correspond à vos critères.</h2>
     {% endif %}
     <button>
-        {#  <a href="{{ path('activity_create' }}"> #}
-        <a href="#">Créer une sortie</a>
+        <a href="{{ path('sortie_index') }}">Créer une sortie</a>
     </button>
 
 {% endblock %}
