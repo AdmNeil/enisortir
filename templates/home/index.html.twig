@@ -107,10 +107,8 @@
                         <a href="#">Afficher</a>
                         {% if sortie.etat.libelle == 'Ouvert' %}
                             {% if isInscrit %}
-                                {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">Se désister</a>
+                                - <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}">Se désister</a>
                             {% else %}
-                                {# <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}"> #}
                                 - <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}

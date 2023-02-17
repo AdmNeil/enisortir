@@ -90,7 +90,6 @@ class SortieController extends AbstractController
                               SortieRepository       $sortieRepository,
                               EntityManagerInterface $em): Response
     {
-
         $sortie = $sortieRepository->findOneBy(["id" => $id]);
 
         //Vérification que l'utilisateur connecté n'est pas déjà inscrit
@@ -107,6 +106,33 @@ class SortieController extends AbstractController
             $this->addFlash('success', 'Vous avez bien été inscrit(e) !');
         } else {
             $this->addFlash('error', 'Vous êtes déjà inscrit(e) !');
+        }
+        return $this->redirectToRoute('home_index');
+    }
+
+    #[Route('/unsubscribe/{id}', name: '_unsubscribe')]
+    public function unsubscribe(int                    $id,
+                                ParticipantRepository  $participantRepository,
+                                SortieRepository       $sortieRepository,
+                                EntityManagerInterface $em): Response
+    {
+
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+
+        //Vérification que l'utilisateur connecté est bien déjà inscrit
+        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+        $dejaInscrit = false;
+        foreach ($sortie->getParticipants() as $participant) {
+            $dejaInscrit = ($participant === $utilisateur);
+        }
+
+        if ($dejaInscrit) {
+            $sortie->removeParticipant($utilisateur);
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('success', 'Votre inscription a bien été supprimée !');
+        } else {
+            $this->addFlash('error', 'Vous n\'êtes pas inscrit(e) !');
         }
         return $this->redirectToRoute('home_index');
     }
