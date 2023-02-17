@@ -46,19 +46,21 @@ class ProfileController extends AbstractController
         $participantForm = $this->createForm(ProfileType::class, $participant);
         $participantForm->handleRequest($request);
         if($participantForm->isSubmitted() && $participantForm->isValid()){
-            $brochureFile = $participantForm->get("imageFile")->getData();
-            if ($brochureFile) {
-                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $brochureFile->guessExtension();
+            $newImgFile = $participantForm->get("imageFile")->getData();
+
+            if ($newImgFile) {
+                $newImgFilename = pathinfo($newImgFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($newImgFilename);
+               //Gestion unicité du nom du fichier
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $newImgFile->guessExtension();
+
                 try {
-                    //TO DO METHODE REMOVE
-//                    $fileName = $brochureFile.$safeFilename;
-//                    $brochureFile1 = new Filesystem();
-//                    $projectDir = $this->getParameter('kernel.project_dir');
-//                    $brochureFile1 -> remove($projectDir.'/public/img'.$fileName);
-//                    $brochureFile->remove(['/public/img/', $participant->getUrlPhoto()]);
-                    $brochureFile->move(
+                    $oldImgFile = $participantRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
+
+                    $fileSystem = new Filesystem();
+                    $fileSystem->remove($this->getParameter('upload_directory').'\\' . $oldImgFile->getUrlPhoto());
+
+                    $newImgFile->move(
                         $this->getParameter('upload_directory'),
                         $newFilename
                     );
