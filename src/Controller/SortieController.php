@@ -29,7 +29,7 @@ class SortieController extends AbstractController
      * @throws NonUniqueResultException
      */
     #[Route('/', name: '_index')]
-    public function index(EntityManagerInterface $em, Request $request, EtatRepository $etatRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, ParticipantRepository $participantRepository): Response
+    public function index(EntityManagerInterface $em, Request $request, EtatRepository $etatRepository, VilleRepository $villeRepository, ParticipantRepository $participantRepository): Response
     {
         $user = $participantRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
@@ -58,15 +58,15 @@ class SortieController extends AbstractController
 
         $sortie->setLieu($lieuForm->getData());
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()){
+        if($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $intEtat = null;
 
             if($sortieForm->getClickedButton()->getName() === "saveSortie") {
                 $intEtat = 1;
-                $this->addFlash('info', 'Sortie Sauvegarder');
-            } else if ($sortieForm->getClickedButton()->getName() === "publieSortie") {
+                $this->addFlash('info', 'Sortie sauvegardée');
+            } else if ($sortieForm->getClickedButton()->getName() === "publishSortie") {
                 $intEtat = 2;
-                $this->addFlash('success', 'Sortie publier');
+                $this->addFlash('success', 'Sortie publiée');
             }
 
             $etatFind = $etatRepository->findOneBy(['id' => $intEtat]);
