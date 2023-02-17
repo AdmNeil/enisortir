@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1> {{ participant.username }} </h1>
+    <div><img src="{{ asset('/img/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
+    <div>Prénom :  {{ participant.prenom }}</div>
+    <div>Nom : {{ participant.nom }} </div>
+    <div>Téléphone : {{ participant.telephone }} </div>
+    <div>Email : {{ participant.mail }}</div>
+    <button><a href="{{ path('home_index') }}">Annuler</a></button>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
