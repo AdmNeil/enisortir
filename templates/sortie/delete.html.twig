@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} | Supprimer{% endblock %}
+
+{% block body %}
+    <h1>Annuler une Sortie</h1>
+    {{ form_start(sortieForm) }}
+    <div>
+        {{ form_row(sortieForm._token) }}
+        <div>
+            <p>Nom de la sortie</p>
+            <p>{{ findMySortie.nom }}</p>
+        </div>
+        <div>
+            <p>Date de la sortie</p>
+            <p>{{ findMySortie.dateHeureDeb | date('d/m/Y') }}</p>
+        </div>
+        <div>
+            <p>Ville organisatrice</p>
+            <p>{{ findMySortie.site.nom }}</p>
+        </div>
+        <div>
+            <p>Lieu</p>
+            <p>{{ findMySortie.lieu.nom }} {{ findMySortie.lieu.rue }} {{ findMySortie.lieu.ville.codePostal }} {{ findMySortie.lieu.ville.nom }}</p>
+        </div>
+        {{ form_row(sortieForm.infosSortie, { 'label': 'Motif' }) }}
+        <div>
+            {{ form_row(sortieForm.annuleSortie) }}
+
+            <a href="{{ path('home_index') }}">Annuler</a>
+        </div>
+    </div>
+    {{ form_end(sortieForm, {'render_rest': false}) }}
+{% endblock %}
+
+
