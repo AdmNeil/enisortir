@@ -5,13 +5,19 @@ namespace App\Entity;
 use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[Vich\Uploadable]
+
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -19,6 +25,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -31,15 +39,39 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Regex(
+        pattern: '/\d+/',
+        match: false,
+        message: 'Votre nom ne peut pas contenir de chiffre',
+    )]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Regex(
+        pattern: '/\d+/',
+        match: false,
+        message: 'Votre prénom ne peut pas contenir de chiffre',
+    )]
     #[ORM\Column(length: 30)]
     private ?string $prenom = null;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Regex(
+        pattern: '/[0-9]{10}/',
+        match: true,
+        message: 'Votre numéro de téléphone ne peut pas contenir de lettre',
+    )]
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
+    #[Assert\NotBlank]
+    #[Assert\NotNull]
+    #[Assert\Email(message: "L'email {{ value }} n'est pas valide.")]
     #[ORM\Column(length: 20, unique: true)]
     private ?string $mail = null;
 
@@ -64,6 +96,13 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
+
+    /**
+     * @Vich\UploadableField(mapping="product_images", fileNameProperty="image")
+     * @var File
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?File $imageFile = null;
 
     public function __construct()
     {
@@ -307,6 +346,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     public function getUrlPhoto(): ?string
     {
         return $this->urlPhoto;
@@ -317,5 +357,19 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->urlPhoto = $urlPhoto;
 
         return $this;
+    }
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }
