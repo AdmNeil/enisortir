@@ -81,7 +81,7 @@ class ProfileController extends AbstractController
 
     #[Route('/show/{id}', name: '_show')]
     public function show(int                   $id,
-                         ParticipantRepository $participantRepository)
+                         ParticipantRepository $participantRepository) :Response
     {
         $participant = $participantRepository->findOneBy(["id" => $id]);
 
