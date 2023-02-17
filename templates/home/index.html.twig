@@ -98,7 +98,7 @@
                 <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} ">
                      {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
                 <div>
-                    {% if sortie.etat.libelle == 'En création' %}
+                    {% if sortie.etat.libelle == 'En création' and sortie.organisateur == app.user %}
                     {#  <a href="{{ path('activity_update', {'id': sortie.id}) }}"> #}
                         <a href="#">Modifier</a> -
                     {#  <a href="{{ path('activity_publish', {'id': sortie.id}) }}"> #}
@@ -113,8 +113,7 @@
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}
                         {% if isInscrit %}
-                            {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
-                            - <a href="#">Se désister</a>
+                            - <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}">Se désister</a>
                             {% endif %}
                         {% endif %}
                     {% endif %}
@@ -126,8 +125,7 @@
         <h2>Aucune sortie ne correspond à vos critères.</h2>
     {% endif %}
     <button>
-        {#  <a href="{{ path('activity_create' }}"> #}
-        <a href="#">Créer une sortie</a>
+        <a href="{{ path('sortie_index') }}">Créer une sortie</a>
     </button>
 
 {% endblock %}
