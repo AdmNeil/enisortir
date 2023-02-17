@@ -11,14 +11,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
-#[Vich\Uploadable]
-
-class Participant implements UserInterface, PasswordAuthenticatedUserInterface
+class Participant implements UserInterface//, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -97,10 +94,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    /**
-     * @Vich\UploadableField(mapping="product_images", fileNameProperty="image")
-     * @var File
-     */
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?File $imageFile = null;
 
