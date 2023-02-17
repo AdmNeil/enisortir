@@ -110,8 +110,8 @@
                                 {# <a href="{{ path('activity_unsubscribe', {'id': sortie.id}) }}"> #}
                                 - <a href="#">Se désister</a>
                             {% else %}
-                                {# <a href="{{ path('activity_subscribe', {'id': sortie.id}) }}"> #}
-                                - <a href="#">S'inscrire</a>
+                                {# <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}"> #}
+                                - <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                         {% elseif sortie.etat.libelle == 'Clôturé' %}
                         {% if isInscrit %}

@@ -50,7 +50,7 @@ class SortieController extends AbstractController
 
         $VilleExist = $villeRepository->findIfExistVille($villeForm->get('codePostal')->getData());
 
-        if(sizeof($VilleExist) === 1) {
+        if (sizeof($VilleExist) === 1) {
             $lieu->setVille($VilleExist[0]);
         } else {
             $lieu->setVille($villeForm->getData());
@@ -58,10 +58,10 @@ class SortieController extends AbstractController
 
         $sortie->setLieu($lieuForm->getData());
 
-        if($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             $intEtat = null;
 
-            if($sortieForm->getClickedButton()->getName() === "saveSortie") {
+            if ($sortieForm->getClickedButton()->getName() === "saveSortie") {
                 $intEtat = 1;
                 $this->addFlash('info', 'Sortie sauvegardée');
             } else if ($sortieForm->getClickedButton()->getName() === "publishSortie") {
@@ -72,7 +72,7 @@ class SortieController extends AbstractController
             $etatFind = $etatRepository->findOneBy(['id' => $intEtat]);
             $sortie->setEtat($etatFind);
 
-            if(sizeof($VilleExist) === 0) $em->persist($ville);
+            if (sizeof($VilleExist) === 0) $em->persist($ville);
 
             $em->persist($lieu);
             $em->persist($sortie);
@@ -82,5 +82,32 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/index.html.twig', compact('sortieForm', 'lieuForm', 'villeForm'));
+    }
+
+    #[Route('/subscribe/{id}', name: '_subscribe')]
+    public function subscribe(int                    $id,
+                              ParticipantRepository  $participantRepository,
+                              SortieRepository       $sortieRepository,
+                              EntityManagerInterface $em): Response
+    {
+
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+
+        //Vérification que l'utilisateur connecté n'est pas déjà inscrit
+        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+        $dejaInscrit = false;
+        foreach ($sortie->getParticipants() as $participant) {
+            $dejaInscrit = ($participant === $utilisateur);
+        }
+
+        if (!$dejaInscrit) {
+            $sortie->addParticipant($utilisateur);
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('success', 'Vous avez bien été inscrit(e) !');
+        } else {
+            $this->addFlash('error', 'Vous êtes déjà inscrit(e) !');
+        }
+        return $this->redirectToRoute('home_index');
     }
 }
