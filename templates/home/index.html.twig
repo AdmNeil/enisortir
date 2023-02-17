@@ -95,8 +95,8 @@
                     {% endif %}
                 {% endfor %}
                 <div>{{ isInscrit ? 'X' : '-' }}</div>
-{#                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} "> #}
-                <div><a href="#">{{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
+                <div><a href="{{ path('profile_show', {'id': sortie.organisateur.id}) }} ">
+                     {{ sortie.organisateur.prenom }} {{ sortie.organisateur.nom }}</a></div>
                 <div>
                     {% if sortie.etat.libelle == 'En création' %}
                     {#  <a href="{{ path('activity_update', {'id': sortie.id}) }}"> #}

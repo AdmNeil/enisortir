@@ -33,9 +33,12 @@ class HomeController extends AbstractController
         $filtreNom = '';
         $filtreDateMin = '';
         $filtreDateMax = '';
-        $cocheOrganisateur = false;
-        $cocheInscrit = false;
-        $cocheNonInscrit = false;
+        $filtreDates = false;
+        $dateMin = new \DateTime();
+        $dateMax = new \DateTime();
+        $cocheOrganisateur = true;
+        $cocheInscrit = true;
+        $cocheNonInscrit = true;
         $cochePassees = false;
         //initialisation du tableau servant à stocker les messages d'anomalie
         $tabErr = ["contenuNom" => '',
@@ -44,14 +47,17 @@ class HomeController extends AbstractController
 
         //1.créer une instance de Sortie
         $sortie = new Sortie();
+        //initialisation du site avec celui de l'utilisateur connecté
+        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+        $siteInit = $utilisateur->getSite();
+        $sortie->setSite($siteInit);
+        $filtreSite = $siteInit;
 
         //2.créer une instance du formulaire FiltreHomeType en lien avec l'entité $sortie
         $filtreHomeForm = $this->createForm(FiltreHomeType::class, $sortie);
 
         //4.traiter le formulaire
         $filtreHomeForm->handleRequest($request);
-        $sorties = null;
-
         if ($filtreHomeForm->isSubmitted() && $filtreHomeForm->isValid()) {
 
             $filtreSite = $sortie->getSite();
@@ -79,27 +85,20 @@ class HomeController extends AbstractController
                 }
             }
 
-            //si pas d'erreur de saisie et Formulaire validé (pour champ Site)
+            //si pas d'erreur de saisie et formulaire validé (pour champ Site)
             if (!$yaErreur ) {
                 if (strlen($filtreDateMin) !== 0 && strlen($filtreDateMax) !== 0) {
                     $filtreDates = true;
                     $dateMin = new \DateTime($filtreDateMin);
                     $dateMax = new \DateTime($filtreDateMax);
                 }
-                else {
-                    $filtreDates = false;
-                    $dateMin = new \DateTime();
-                    $dateMax = new \DateTime();
-                }
-
-                $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
-
-                $sorties = $sortieRepository->findAllWithFilters($filtreSite,
-                    $filtreNom, $filtreDates, $dateMin, $dateMax, $utilisateur,
-                    $cocheOrganisateur, $cocheInscrit, $cocheNonInscrit, $cochePassees);
             }
         }
-dump($sorties);
+
+        $sorties = $sortieRepository->findAllWithFilters($filtreSite,
+            $filtreNom, $filtreDates, $dateMin, $dateMax, $utilisateur,
+            $cocheOrganisateur, $cocheInscrit, $cocheNonInscrit, $cochePassees);
+
         //3.envoyer le formulaire au twig
         return $this->render('home/index.html.twig',
             compact('filtreHomeForm', 'tabErr',

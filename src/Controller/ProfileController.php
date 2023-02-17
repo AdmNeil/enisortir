@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/profile', name:'profile')]
+#[Route('/profile', name: 'profile')]
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
@@ -25,7 +25,7 @@ class ProfileController extends AbstractController
         ParticipantRepository $participantRepository,
     ): Response
     {
-        $participant = $participantRepository->findOneBy(["username"=>$this->getUser()->getUserIdentifier()]);
+        $participant = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
         return $this->render(
             'profile/myprofile.html.twig',
             compact('participant')
@@ -37,28 +37,28 @@ class ProfileController extends AbstractController
     //Modifier mes informations de profil
     public function update(
         EntityManagerInterface $em,
-        Request $request,
-        ParticipantRepository $participantRepository,
-        SluggerInterface $slugger,
+        Request                $request,
+        ParticipantRepository  $participantRepository,
+        SluggerInterface       $slugger,
     ): Response
     {
-        $participant = $participantRepository->findOneBy(["username"=>$this->getUser()->getUserIdentifier()]);
+        $participant = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
         $participantForm = $this->createForm(ProfileType::class, $participant);
         $participantForm->handleRequest($request);
-        if($participantForm->isSubmitted() && $participantForm->isValid()){
+        if ($participantForm->isSubmitted() && $participantForm->isValid()) {
             $newImgFile = $participantForm->get("imageFile")->getData();
 
             if ($newImgFile) {
                 $newImgFilename = pathinfo($newImgFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($newImgFilename);
-               //Gestion unicité du nom du fichier
+                //Gestion unicité du nom du fichier
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $newImgFile->guessExtension();
 
                 try {
                     $oldImgFile = $participantRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
 
                     $fileSystem = new Filesystem();
-                    $fileSystem->remove($this->getParameter('upload_directory').'\\' . $oldImgFile->getUrlPhoto());
+                    $fileSystem->remove($this->getParameter('upload_directory') . '\\' . $oldImgFile->getUrlPhoto());
 
                     $newImgFile->move(
                         $this->getParameter('upload_directory'),
@@ -76,6 +76,17 @@ class ProfileController extends AbstractController
         return $this->render(
             'profile/update.html.twig',
             compact('participantForm')
+        );
+    }
+
+    #[Route('/show/{id}', name: '_show')]
+    public function show(int                   $id,
+                         ParticipantRepository $participantRepository)
+    {
+        $participant = $participantRepository->findOneBy(["id" => $id]);
+
+        return $this->render('profile/show.html.twig',
+                             compact('participant')
         );
     }
 
