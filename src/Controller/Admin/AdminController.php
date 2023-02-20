@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\Sortie;
+use App\Entity\UploadFile;
 use App\Entity\Ville;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
@@ -64,6 +65,10 @@ class AdminController extends AbstractDashboardController
             MenuItem::linkToCrud('Show Site', 'fas fa-eye', Site::class),
             MenuItem::linkToCrud('Show Ville', 'fas fa-eye', Ville::class),
             MenuItem::linkToCrud('Create Ville', 'fas fa-plus-circle', Ville::class)->setAction(Crud::PAGE_NEW)
+        ]);
+
+        yield MenuItem::subMenu('Add list users', 'fas fa-bar')->setSubItems([
+            MenuItem::linkToCrud('Add file', 'fas fa-eye', UploadFile::class)->setAction(Crud::PAGE_NEW)
         ]);
     }
 }
