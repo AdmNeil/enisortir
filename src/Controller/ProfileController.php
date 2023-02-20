@@ -10,6 +10,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
+
 
     #[Route('/@me', name: '_myprofile')]
     //Afficher mon profil quand je suis connecté
@@ -40,6 +42,7 @@ class ProfileController extends AbstractController
         Request                $request,
         ParticipantRepository  $participantRepository,
         SluggerInterface       $slugger,
+        UserPasswordHasherInterface $userPasswordHasher
     ): Response
     {
         $participant = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
@@ -69,6 +72,12 @@ class ProfileController extends AbstractController
                     dd($e);
                 }
             }
+
+            $user = $participant;
+            $pass = $participantForm->get('password')->getData();
+            $hash = $userPasswordHasher->hashPassword($user, $pass);
+            $participantForm->getData()->setPassword($hash);
+
             $em->persist($participant);
             $em->flush();
             return $this->render('profile/myprofile.html.twig');
@@ -81,9 +90,14 @@ class ProfileController extends AbstractController
 
     #[Route('/show/{id}', name: '_show')]
     public function show(int                   $id,
-                         ParticipantRepository $participantRepository) :Response
+                         ParticipantRepository $participantRepository,
+                         ) :Response
     {
         $participant = $participantRepository->findOneBy(["id" => $id]);
+        if (is_null($participant)) {
+            $this->addFlash('error', 'Profil non disponible - participant ('.$id.') inexistant !');
+            return $this->redirectToRoute('home_index');
+        }
 
         return $this->render('profile/show.html.twig',
                              compact('participant')

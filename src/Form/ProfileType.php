@@ -27,6 +27,7 @@ class ProfileType extends AbstractType
                 'type' => PasswordType::class,
                 'invalid_message' => 'Les mots de passe que vous avez saisis ne correspondent pas. Veuillez saisir votre mot de passe dans le champ "Passeword" et confirmer votre saisie dans le champ "Repeat Passeword".',
                 'required' => true,
+                'trim' => true,
                 'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmer mot de passe'],
             ])

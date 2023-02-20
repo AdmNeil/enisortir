@@ -24,6 +24,10 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
+    #[Assert\Regex(
+        pattern: '/^[^"{(\][|`)°=@%$?£¨¤*µ,;:§=²]+$/i',
+        message: ('Seuls les caracères spéciaux suviants sont autorisés dans le pseudo : \' . - _ ! # ^ ~'),
+        match: true)]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $username = null;
 
@@ -33,36 +37,37 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Assert\Regex(
+        pattern: '/^[^$?=]+$/i',
+        message: ('Le mot de passe ne doit pas contenir les caractères spéciaux suivant : $,?,=.'),
+        match: true)]
     #[ORM\Column]
     private ?string $password = null;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Regex(
-        pattern: '/\d+/',
-        match: false,
-        message: 'Votre nom ne peut pas contenir de chiffre',
-    )]
+        pattern: '/^[^~"{(\][|_\)°=@%$?#£¨¤*µ,;.:!§=²0-9]+$/i',
+        message: ('Le nom ne doit pas contenir de caractères spéciaux ou de chiffres.'),
+        match: true)]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Regex(
-        pattern: '/\d+/',
-        match: false,
-        message: 'Votre prénom ne peut pas contenir de chiffre',
-    )]
+        pattern: '/^[^~"{(\][|`_\)°=@%$?#£¨¤*µ,;.:!§=²0-9]+$/i',
+        message: ('Le prénom ne doit pas contenir de caractères spéciaux ou de chiffres.'),
+        match: true)]
     #[ORM\Column(length: 30)]
     private ?string $prenom = null;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Regex(
-        pattern: '/[0-9]{10}/',
-        match: true,
-        message: 'Votre numéro de téléphone ne peut pas contenir de lettre',
-    )]
+        pattern: '/^[0-9]{10}+$/',
+        message: 'Le numéro de téléphone doit uniquement contenir 10 chiffres.',
+        match: true)]
     #[ORM\Column(length: 15, nullable: true)]
     private ?string $telephone = null;
 
