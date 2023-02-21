@@ -16,7 +16,10 @@ class SortieUpdateCheck
         //Vérification que l'utilisateur connecté est bien déjà inscrit
         $dejaInscrit = false;
         foreach ($sortie->getParticipants() as $participant) {
-            $dejaInscrit = ($participant === $utilisateur);
+            if ($participant === $utilisateur) {
+                $dejaInscrit = true;
+                break;
+            }
         }
         return $dejaInscrit;
     }

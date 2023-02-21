@@ -28,10 +28,11 @@ class SortieType extends AbstractType
                 'label' => 'Nom de la sortie'
             ])
             ->add('dateHeureDeb', DateTimeType::class, [
-                'date_label' => 'Date et heure de la sortie',
+                'label' => 'Date et heure de la sortie',
                 'widget' => 'single_text'
             ])
             ->add('dateCloture', DateType::class, [
+                'label' => 'Date de clôture des inscriptions',
                 'widget' => 'single_text'
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
@@ -39,7 +40,7 @@ class SortieType extends AbstractType
                 'attr' => ['min' => 1, 'max' => 100, 'value' => 1]
             ])
             ->add('duree', IntegerType::class, [
-                'label' => 'Durée',
+                'label' => 'Durée (en minutes)',
                 'attr' => ['value' => 90]
             ])
             ->add('infosSortie', TextareaType::class, [
@@ -49,6 +50,7 @@ class SortieType extends AbstractType
                 'label' => 'Ville organisatrice',
                 'disabled' => true
             ])
+//            ->add('lieu',LieuType::class)
             ->add('saveSortie', SubmitType::class, [
                 'label' => 'Enregistrer'
             ])

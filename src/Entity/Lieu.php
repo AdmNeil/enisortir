@@ -6,6 +6,7 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
 class Lieu
@@ -15,15 +16,31 @@ class Lieu
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Type(type: 'string',
+        message: 'Le nom du lieu doit être une chaîne de caractères.')]
+    #[Assert\NotBlank([],
+        message: 'Merci de renseigner un nom du lieu.')]
+    #[Assert\Length(min: 3, max: 30,
+        minMessage: 'Le nom de lieu doit faire entre 3 et 30 caractères.',
+        maxMessage: 'Le nom de lieu doit faire entre 3 et 30 caractères.')]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
+    #[Assert\Type(type: 'string',
+        message: 'La rue doit être une chaîne de caractères.')]
+    #[Assert\Length(min: 3, max: 30,
+        minMessage: 'La rue doit faire entre 3 et 30 caractères.',
+        maxMessage: 'La rue doit faire entre 3 et 30 caractères.')]
     #[ORM\Column(length: 30, nullable: true)]
     private ?string $rue = null;
 
+    #[Assert\Type(type: 'float',
+        message: 'La latitude doit être un réel.')]
     #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
+    #[Assert\Type(type: 'float',
+        message: 'La longitude doit être un réel.')]
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
