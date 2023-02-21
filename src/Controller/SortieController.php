@@ -248,7 +248,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
         return $this->render(
-            'detail.html.twig',
+            'sortie/detail.html.twig',
             compact('sortie')
         );
     }
