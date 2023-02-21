@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1> {{ participant.username }} </h1>
-    <div><img src="{{ asset('/img/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
+    <div><img src="{{ asset('/img/img-users/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
     <div>Prénom :  {{ participant.prenom }}</div>
     <div>Nom : {{ participant.nom }} </div>
     <div>Téléphone : {{ participant.telephone }} </div>

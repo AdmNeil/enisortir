@@ -151,13 +151,7 @@ class SortieController extends AbstractController
         $lieuForm->handleRequest($request);
         $villeForm->handleRequest($request);
 
-        $VilleExist = $villeRepository->findIfExistVille($villeForm->get('codePostal')->getData());
-
-        if (sizeof($VilleExist) === 1) {
-            $lieuForm->getData()->setVille($VilleExist[0]);
-        } else {
-            $lieuForm->getData()->setVille($villeForm->getData());
-        }
+        $lieuForm->getData()->setVille($villeForm->getData());
 
         $sortieForm->getData()->setLieu($lieuForm->getData());
 
@@ -189,7 +183,6 @@ class SortieController extends AbstractController
 
             $etatFind = $etatRepository->findOneBy(['id' => $intEtat]);
             $sortieForm->getData()->setEtat($etatFind);
-            //if (sizeof($VilleExist) === 0) $em->persist($villeForm);
 
             $em->flush();
 

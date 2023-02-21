@@ -17,7 +17,7 @@
     <div>Email: {{ app.user.mail }}</div>
     <br>
     <div> Ma photo:
-        <img src="{{ asset('/img/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
+        <img src="{{ asset('/img/img-users/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
     </div>
     <br>
     <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"></a>
