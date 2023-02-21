@@ -6,6 +6,9 @@
 
 
 {% block body %}
+    <div class="example-wrapper">
+        <h1>Bonjour {{ app.user.username }} ! ✅</h1>
+    </div>
        <h1> {{ app.user.username }} </h1>
     <br>
     <div> Prénom:  {{ app.user.prenom }}</div>
