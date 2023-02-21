@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 :root {
     --initialColor: #000;
 }
@@ -8,13 +10,28 @@ html, body, * {
     padding: 0;
     text-decoration: none;
     color: var(--initialColor);
-    font-family: Arial, serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
     display: grid;
     grid-template-rows: 0fr 1fr;
     height: 100vh;
+    background: white;
+}
+
+.top-bar{
+    display: inherit;
+}
+
+.logo{
+    display: inherit;
+    width: max-content;
+}
+
+.logo img{
+    width: 30%;
+    border-radius: 5px;
 }
 
 nav {
@@ -29,6 +46,12 @@ nav {
 .nav-container {
     justify-items: right;
     display: inherit;
+    overflow: hidden;
+}
+
+.nav-container a{
+    color: #005185;
+    font-weight: bold;
 }
 
 .message {
@@ -77,3 +100,81 @@ nav {
 .listCacher {
     display: none;
 }
+
+.bottom-bar{
+    text-align: center;
+    background-color: #005185;
+    padding: 1.5rem 10%;
+}
+
+.bottom-bar p {
+    color: white;
+    font-weight: bold;
+    letter-spacing: .2rem;
+}
+
+main {
+    margin: 2rem 10%;
+}
+
+.form-login {
+    font-weight: bold;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    border: solid #005185;
+    margin: auto;
+    width: 15rem;
+}
+
+form .separation{
+    width: 100%;
+    height: 1px;
+    background-color: #005185;
+    margin-top: 5px;
+}
+
+form .corps-formulaire{
+    margin-bottom: 30px;
+}
+
+form .corps-formulaire .groupe{
+   position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+form .corps-formulaire .groupe input{
+    margin-top: 5px;
+    padding: 10px 5px 10px 30px;
+    border : 1px solid #c9c9c9;
+    outline-color: #005185;
+    border-radius: 5px;
+}
+
+form .corps-formulaire .groupe i{
+    position: absolute;
+    left:0;
+    top: 25px;
+    padding: 9px 8px;
+    color: #005185 ;
+}
+
+form .pied-form button{
+    margin-top: 10px;
+    background-color: #005185;
+    color: white;
+    font-size: 15px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    transition: transform 0.5s;
+}
+
+form .pied-form button:hover{
+   transform: scale(1.05);
+}
+
