@@ -23,6 +23,7 @@ class LieuType extends AbstractType
             ->add('rue', TextType::class, [
                 'attr' => ['list' => 'adresseList']
             ])
+//            ->add('ville', VilleType::class)
             ->add('latitude')
             ->add('longitude')
         ;

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,21 +17,54 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Type(type:'string',
+        message:'Le nom doit être une chaine de caractères.')]
+    #[Assert\NotBlank([],
+        message: 'Merci de renseigner un nom de sortie.')]
+    #[Assert\Length(min: 3, max: 30,
+        minMessage: 'Le nom doit faire entre 3 et 30 caractères.',
+        maxMessage: 'Le nom doit faire entre 3 et 30 caractères.')]
+    #[Assert\Regex(
+        pattern: '/^[^@%$?#=]+$/i',
+        message: ('Le nom ne doit pas contenir de caractères spéciaux.'),
+        match: true)]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
+    #[Assert\Type(type:\DateTimeInterface::class,
+        message:'La date de début de sortie doit être une date-heure.')]
+    #[Assert\GreaterThan('today',
+        message: 'La sortie ne peut débuter avant demain.')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDeb = null;
 
+    #[Assert\Type(type: 'integer',
+        message: 'la durée {{ value }} n\'est pas de type {{ type }}.')]
+    #[Assert\GreaterThanOrEqual(0 ,
+        message: 'La durée ne peut pas être négative.')]
     #[ORM\Column(nullable: true)]
     private ?int $duree = null;
 
+    #[Assert\Type(type:\DateTimeInterface::class,
+        message:'La date de clôture des inscriptions doit être une date-heure.')]
+    #[Assert\LessThan([],
+        propertyPath: "dateHeureDeb",
+        message: 'La clôture des inscriptions doit avoir lieu avant le début de la sortie.')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCloture = null;
 
+    #[Assert\Type(type: 'integer',
+        message: 'Le nombre d\'inscriptions maximum {{ value }} n\'est pas de type {{ type }}.')]
+    #[Assert\GreaterThanOrEqual(0 , message: 'Le nombre d\'inscriptions ne peut pas être négatif.')]
     #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
+    #[Assert\Type(type:'string',
+        message: 'La description doit être une chaîne de caractères.')]
+    #[Assert\Regex(
+        pattern: '/^[^@%$?#=]+$/i',
+        message: ('La description ne doit pas contenir de caractères spéciaux.'),
+        match: true)]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
