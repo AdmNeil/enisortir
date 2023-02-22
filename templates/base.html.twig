@@ -22,6 +22,14 @@
                         <a href="{{ path('admin') }}">Admin</a>
                     {% endif %}
                 </div>
+                {% if app.request.attributes.get('_route') == 'home_index' %}
+                    <div>
+                        <a href="{{ path('sortie_index') }}">Créer une sortie</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </nav>
                 <div>
                     <a href="{{ path('home_index') }}">Accueil</a>
                 </div>
@@ -39,16 +47,29 @@
 
     <main>
         {% block body %}{% endblock %}
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
     </main>
     <div class="message">
         {% for title, messages in app.flashes %}
-            <div>
+            <div class="un-popup">
                 {% for message in messages %}
                     <p class="comment {{ title }}">{{ message }}</p>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+    {% block template %}{% endblock %}
     <script src="{{ asset('/js/script.js') }}"></script>
     <footer class="bottom-bar">
            <p>&copy; ENISortir {{ "now" | date("Y") }} - Marie Berger · Julien Grit · Hélène Amouzou </p>

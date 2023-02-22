@@ -18,23 +18,10 @@ class FiltreHomeType extends AbstractType
     {
         $builder
 
-            ->add('site', EntityType::class,
-                [
+            ->add('site', EntityType::class, [
                     "class" => Site::class,
                     "choice_label" => "nom"
-                ])
-
-//            ->add('nom')
-//            ->add('dateHeurDeb'
-//            ->add('etat')
-//            ->add('duree')
-//            ->add('dateCloture')
-//            ->add('nbInscriptionsMax')
-//            ->add('urlPhoto')
-//            ->add('infosSortie')
-//            ->add('lieu')
-//            ->add('organisateur')
-//            ->add('participants')
+            ])
         ;
     }
 

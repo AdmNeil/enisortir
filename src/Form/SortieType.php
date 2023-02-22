@@ -65,7 +65,7 @@ class SortieType extends AbstractType
                 'attr' => ['class' => "button"]
             ])
             ->add('removeSortie', SubmitType::class, [
-                'label' => 'Annuler la sortie',
+                'label' => 'Supprimer la sortie'
                 'attr' => ['class' => "button"]
             ])
             ->add('annuleSortie', SubmitType::class, [

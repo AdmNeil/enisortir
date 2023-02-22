@@ -3,13 +3,8 @@
 {% block title %}{{ parent() }} | Sortie{% endblock %}
 
 {% block body %}
-
     <div class="form-update-sortie">
-        {% if app.request.attributes.get('_route') == 'sortie_update' %}
-            <h1>Modification sortie</h1>
-        {% else %}
-            <h1>Nouvelle sortie</h1>
-        {% endif %}
+        <h1>{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modification sortie' : 'Nouvelle sortie' }}</h1>
         <div class="separation"></div>
         {{ form_start(sortieForm) }}
         <div class="groupe-update-sortie">

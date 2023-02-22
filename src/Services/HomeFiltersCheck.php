@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+/* @author AdmNeil
+ * fichier sauvegarder mais pas utilisable dans ce projet vu avec MB44
+ */
 class HomeFiltersCheck
 {
     public function testDatesMinMax($filtreDateMin, $filtreDateMax): string

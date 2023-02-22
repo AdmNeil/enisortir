@@ -135,7 +135,7 @@ class SortieController extends AbstractController
         $datecloture = new DateTime($findMySortie->getDateCloture()->format('Y-m-d h:i'));
         $dateStartEvent = new DateTime($findMySortie->getDateHeureDeb()->format('Y-m-d h:i'));
 
-        if (preg_match("/^[^1-2]$/i", $findMyEtat->getId()) || $datecloture >= $dateStartEvent) {
+        if(preg_match("/^[^1]$/i", $findMyEtat->getId()) || $datecloture >= $dateStartEvent ) {
             $this->addFlash('error', "L'état du formulaire Sortie ne peut être modifié ou annulé");
             return $this->redirectToRoute('home_index');
         }

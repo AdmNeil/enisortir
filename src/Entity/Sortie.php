@@ -7,7 +7,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -15,8 +17,10 @@ class Sortie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_sortie'])]
     private ?int $id = null;
 
+    #[Groups(['show_sortie'])]
     #[Assert\Type(type:'string',
         message:'Le nom doit être une chaine de caractères.')]
     #[Assert\NotBlank([],
@@ -36,6 +40,7 @@ class Sortie
     #[Assert\GreaterThan('today',
         message: 'La sortie ne peut débuter avant demain.')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_sortie'])]
     private ?\DateTimeInterface $dateHeureDeb = null;
 
     #[Assert\Type(type: 'integer',
@@ -51,12 +56,14 @@ class Sortie
         propertyPath: "dateHeureDeb",
         message: 'La clôture des inscriptions doit avoir lieu avant le début de la sortie.')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_sortie'])]
     private ?\DateTimeInterface $dateCloture = null;
 
     #[Assert\Type(type: 'integer',
         message: 'Le nombre d\'inscriptions maximum {{ value }} n\'est pas de type {{ type }}.')]
     #[Assert\GreaterThanOrEqual(0 , message: 'Le nombre d\'inscriptions ne peut pas être négatif.')]
     #[ORM\Column]
+    #[Groups(['show_sortie'])]
     private ?int $nbInscriptionsMax = null;
 
     #[Assert\Type(type:'string',
@@ -70,6 +77,7 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -78,13 +86,16 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Site $site = null;
 
     #[ORM\ManyToOne(inversedBy: 'sortiesOrganisateur')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Participant $organisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sortiesParticipant')]
+    //#[Groups(['show_sortie'])]
     private Collection $participants;
 
     public function __construct()

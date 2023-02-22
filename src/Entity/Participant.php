@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface as PasswordAuthenticatedUserInterfaceAlias;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
@@ -21,6 +22,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterfaceAl
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_sortie'])]
     private ?int $id = null;
 
     #[Assert\NotBlank]
@@ -52,6 +54,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterfaceAl
         message: ('Le nom ne doit pas contenir de caractères spéciaux ou de chiffres.'),
         match: true)]
     #[ORM\Column(length: 30)]
+    #[Groups(['show_sortie'])]
     private ?string $nom = null;
 
     #[Assert\NotBlank]
@@ -61,6 +64,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterfaceAl
         message: ('Le prénom ne doit pas contenir de caractères spéciaux ou de chiffres.'),
         match: true)]
     #[ORM\Column(length: 30)]
+    #[Groups(['show_sortie'])]
     private ?string $prenom = null;
 
     #[Assert\NotBlank]
