@@ -25,43 +25,52 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Nom de la sortie'
+                'label' => 'Nom de la sortie',
+                'attr' => ['class' => "groupe"]
             ])
             ->add('dateHeureDeb', DateTimeType::class, [
                 'label' => 'Date et heure de la sortie',
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => "groupe"]
             ])
             ->add('dateCloture', DateType::class, [
                 'label' => 'Date de clôture des inscriptions',
-                'widget' => 'single_text'
+                'widget' => 'single_text',
+                'attr' => ['class' => "groupe"]
             ])
             ->add('nbInscriptionsMax', IntegerType::class, [
                 'label' => 'Nombre de places',
-                'attr' => ['min' => 1, 'max' => 100, 'value' => 1]
+                'attr' => ['min' => 1, 'max' => 100, 'value' => 1, 'class' => "groupe"]
             ])
             ->add('duree', IntegerType::class, [
                 'label' => 'Durée (en minutes)',
-                'attr' => ['value' => 90]
+                'attr' => ['value' => 90, 'class' => "groupe"]
             ])
             ->add('infosSortie', TextareaType::class, [
-                'label' => 'Description et infos'
+                'label' => 'Description et infos',
+                'attr' => ['class' => "groupe"]
             ])
             ->add('site', TextType::class, [
                 'label' => 'Ville organisatrice',
-                'disabled' => true
+                'disabled' => true,
+                'attr' => ['class' => "groupe"]
             ])
 //            ->add('lieu',LieuType::class)
             ->add('saveSortie', SubmitType::class, [
-                'label' => 'Enregistrer'
+                'label' => 'Enregistrer',
+                'attr' => ['class' => "button"]
             ])
             ->add('publishSortie', SubmitType::class, [
-                'label' => 'Publier la sortie'
+                'label' => 'Publier la sortie',
+                'attr' => ['class' => "button"]
             ])
             ->add('removeSortie', SubmitType::class, [
-                'label' => 'Annuler la sortie'
+                'label' => 'Annuler la sortie',
+                'attr' => ['class' => "button"]
             ])
             ->add('annuleSortie', SubmitType::class, [
-                'label' => 'Enregistrer'
+                'label' => 'Enregistrer',
+                'attr' => ['class' => "button"]
             ])
         ;
     }
