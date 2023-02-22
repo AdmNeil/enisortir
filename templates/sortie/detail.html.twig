@@ -1,35 +1,87 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Détail
+    Infos
 {% endblock %}
 
 {% block body %}
 
-    <h1>Afficher une sortie</h1>
-    <div>Nom de la sortie: {{ sortie.nom }}</div>
-    <div>Date et heure de la sortie: {{ sortie.dateHeureDeb | date('d/m/Y H:i') }}</div>
-    <div>Date limite d'inscription : {{ sortie.dateCloture | date('d/m/Y') }}</div>
-    <div>Nombre de places: {{ sortie.nbInscriptionsMax }}</div>
-    <div>Durée: {{ sortie.duree }} minutes</div>
-    <div>Description et infos: {{ sortie.infosSortie }}</div>
-    <div>Ville organisatrice: {{ sortie.site }}</div>
-    <div>Lieu: {{ sortie.lieu.nom }}</div>
-    <div>Rue: {{ sortie.lieu.rue }}</div>
-    <div>Code postal: {{ sortie.lieu.ville.codePostal }}</div>
-    <div>Latitude: {{ sortie.lieu.latitude }}</div>
-    <div>Longitude: {{ sortie.lieu.longitude }}</div>
-    <article>
-        Liste des participants inscrits:
-        <div>Pseudo</div>
-        <div>Nom</div>
-        <div>
-            {% for participant in sortie.participants %}
-                <div>{{ participant.username }}</div>
-                <div>{{ participant.nom }}</div>
-                <div>{{ participant.prenom }}</div>
-            {% endfor %}
+    <div class="cadre-sortie">
+        <h1>{{ sortie.nom }}</h1>
+        <div class="separation"></div>
+        <div class="grid-sortie">
+            <div>
+                <div class="groupe">
+                    <div class="label">Prévue le :</div>
+                    <div class="input">{{ sortie.dateHeureDeb | date('d/m/Y H:i') }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Date limite d'inscription :</div>
+                    <div class="input">{{ sortie.dateCloture | date('d/m/Y') }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Nombre de places :</div>
+                    <div class="input">{{ sortie.nbInscriptionsMax }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Durée :</div>
+                    <div class="input"> {{ sortie.duree }} minutes</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Description :</div>
+                    <div class="input"> {{ sortie.infosSortie }}</div>
+                </div>
+            </div>
+            <div>
+                <div class="groupe">
+                    <div class="label">Ville organisatrice :</div>
+                    <div class="input"> {{ sortie.site }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Lieu :</div>
+                    <div class="input">{{ sortie.lieu.nom }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Rue :</div>
+                    <div class="input">{{ sortie.lieu.rue }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Code postal :</div>
+                    <div class="input">{{ sortie.lieu.ville.codePostal }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Ville :</div>
+                    <div class="input">{{ sortie.lieu.ville.nom }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Latitude :</div>
+                    <div class="input">{{ sortie.lieu.latitude ? sortie.lieu.latitude : '(non renseigné)' }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="label">Longitude :</div>
+                    <div class="input">{{ sortie.lieu.longitude ? sortie.lieu.longitude : '(non renseigné)' }}</div>
+                </div>
+            </div>
+            <div class="case-participants">
+                <div class="liste-participants">
+                    <h3>Liste des participants</h3>
+                    <article class="grid-lst-participants">
+                        <div class="element bold">
+                            <div>Pseudo</div>
+                            <div>Nom</div>
+                        </div>
+                        {% for participant in sortie.participants %}
+                            <div class="element">
+                                <div>{{ participant.username }}</div>
+                                <div>{{ participant.prenom }} {{ participant.nom }}</div>
+                            </div>
+                        {% endfor %}
+                    </article>
+                </div>
+            </div>
         </div>
-    </article>
-    <a href="{{ path('home_index') }}"><input type="button" value="Retour"></a>
+        <div class="pied">
+            <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
+        </div>
+    </div>
 {% endblock %}
