@@ -117,14 +117,15 @@ main {
     margin: 2rem 10%;
 }
 
-.form-login {
+.form-login, .form-update-profile {
     font-weight: bold;
     background-color: white;
     padding: 30px;
     border-radius: 10px;
     border: solid #005185;
     margin: auto;
-    width: 15rem;
+    /*width: 15rem;*/
+    width: fit-content;
 }
 
 form .separation, .separation{
@@ -136,16 +137,16 @@ form .separation, .separation{
 
 form .corps-formulaire{
     margin-bottom: 30px;
-}
+  }
 
-form .corps-formulaire .groupe, .groupe{
+form .corps-formulaire .groupe, .form-update-profile .groupe, .groupe {
    position: relative;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
 }
 
-form .corps-formulaire .groupe input, .input{
+form .corps-formulaire .groupe input,  input, .input {
     margin-top: 5px;
     padding: 10px 5px 10px 30px;
     border : 1px solid #c9c9c9;
@@ -161,7 +162,7 @@ form .corps-formulaire .groupe i{
     color: #005185 ;
 }
 
-form .pied-form button, .pied .button{
+form .pied-form button, .btn-enregitrer, .btn-annuler, .pied .button {
     margin-top: 10px;
     background-color: #005185;
     color: white;
@@ -177,7 +178,6 @@ form .pied-form button, .pied .button{
 form .pied-form button:hover{
    transform: scale(1.05);
 }
-
 
 .center {
     text-align: center;
@@ -236,7 +236,33 @@ form .pied-form button:hover{
     text-align: center;
 }
 
+/*CSS PAGE UPDATE PROFILE */
 
+.groupe-update-profile input{
+    margin-bottom: 20px;
+}
+
+.groupe-update-profile form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "a b" "c c";
+    grid-gap: 1rem;
+}
+
+.pied-form-update-profile{
+    text-align: center;
+    grid-area: c;
+}
+
+#profile_password_first{
+    display: inherit
+    /*margin-top: 5px;*/
+}
+
+#profile_password_second{
+    display: inherit;
+    margin-top: 5px;
+}
 
 
 
