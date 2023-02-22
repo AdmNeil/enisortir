@@ -66,8 +66,11 @@
         </div>
     </div>
     <div>
-        {% if sorties is not empty  %}
+        <div>
             <h2>Résultats</h2>
+            <a href="{{ path('sortie_index') }}">Créer une sortie</a>
+        </div>
+        {% if sorties is not empty  %}
             <div class="main-list-filter">
                 {% for sortie in sorties %}
                     {% set isInscrit = false %}
@@ -113,8 +116,7 @@
                                 {% if sortie.etat.libelle == 'En création' and sortie.organisateur == app.user %}
                                     <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
                                     <span>/</span>
-                                    {#  <a href="{{ path('activity_publish', {'id': sortie.id}) }}"> #}
-                                    <a href="#">Publier</a>
+                                    <a href="{{ path('sortie_publish', {'id': sortie.id}) }}">Publier</a>
                                 {% else %}
                                     <a href="#">Afficher</a>
                                     {% if sortie.etat.libelle == 'Ouvert' %}

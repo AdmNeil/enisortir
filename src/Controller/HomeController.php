@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Sortie;
 use App\Form\FiltreHomeType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Services\HomeFiltersCheck;
 use stdClass;
@@ -73,7 +74,7 @@ class HomeController extends AbstractController
      * @throws \Exception
      */
     #[Route('/filtre', name: '_filtre', methods: ['POST'])]
-    public function filtre(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, SerializerInterface $serializer): JsonResponse
+    public function filtre(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, SiteRepository $siteRepository, SerializerInterface $serializer): JsonResponse
     {
         $filtre = $request->request->get('filtre');
         $listDetail= [];
@@ -93,6 +94,7 @@ class HomeController extends AbstractController
             $filterCocheNonInscrit = filter_input(INPUT_POST, 'cocheNonInscrit', FILTER_VALIDATE_BOOLEAN);
             $filtreCochePassees = filter_input(INPUT_POST, 'cochePassees', FILTER_VALIDATE_BOOLEAN);
 
+            $checkFiltreDates = true;
             $dateMin = new \DateTime();
             $dateMin->setTimestamp($filtreDateMin[0]);
             $dateMin->format('Y-m-d');
@@ -117,23 +119,21 @@ class HomeController extends AbstractController
                 $tabErr['date'] = 'Les 2 bornes de dates doivent être renseignées';
             } else if($dateMin > $dateMax) {
                 $tabErr['date'] = "La date minimum ne peut pas être supérieure à la date maximum";
+            } else if ($dateMin->format('Y-m-d') === '1970-01-01' && $dateMax->format('Y-m-d') === '1970-01-01') {
+                $checkFiltreDates = false;
             }
-
-                //1.créer une instance de Sortie
-            $sortie = new Sortie();
-            //initialisation du site avec celui de l'utilisateur connecté
-            $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
-            $siteInit = $utilisateur->getSite();
-            $sortie->setSite($siteInit);
-            $filtreSite = $siteInit;
-
-            $sorties = $sortieRepository->findAllWithFilters($filtreSite,
-                $filtreNom, true, $dateMin, $dateMax, $utilisateur,
-                $filterCocheOragnisateur, $filterCocheInscrit, $filterCocheNonInscrit, $filtreCochePassees);
 
             if(sizeof($tabErr) > 0) {
                 return $this->json(['error' => $tabErr]);
             }
+
+            //initialisation du site avec celui de l'utilisateur connecté
+            $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+            $filtreSite = $siteRepository->findOneBy(["id" => $filtreHomeSite]);
+
+            $sorties = $sortieRepository->findAllWithFilters($filtreSite,
+                $filtreNom, $checkFiltreDates, $dateMin, $dateMax, $utilisateur,
+                $filterCocheOragnisateur, $filterCocheInscrit, $filterCocheNonInscrit, $filtreCochePassees);
 
             foreach ($sorties as $sorty) {
                 $context = (new ObjectNormalizerContextBuilder())
@@ -142,12 +142,12 @@ class HomeController extends AbstractController
 
                 $temp = new stdClass();
                 $temp->countParticipant = count($sorty->getParticipants());
-                $temp->isIncrit = 0;
+                $temp->isInscrit = 0;
                 $temp->action = [];
 
                 foreach ($sorty->getParticipants() as $participant) {
                     if($participant->getNom() == $sorty->getOrganisateur()->getNom() && $participant->getPrenom() == $sorty->getOrganisateur()->getPrenom()) {
-                        $temp->isIncrit = 1;
+                        $temp->isInscrit = 1;
                     }
                 }
 
@@ -158,13 +158,13 @@ class HomeController extends AbstractController
                     $temp->action[] = ['path' => '/sortie/detail/', 'name' => 'Afficher'];
 
                     if($sorty->getEtat()->getLibelle() === 'Ouvert') {
-                        if($temp->isIncrit) {
+                        if($temp->isInscrit) {
                             $temp->action[] = ['path' => '/sortie/unsubscribe/', 'name' => 'Se désister'];
                         } else {
                             $temp->action[] = ['path' => '/sortie/subscribe/', 'name' => 'S\'inscrire'];
                         }
                     } else if ($sorty->getEtat()->getLibelle() === 'Clôturé') {
-                        if($temp->isIncrit) {
+                        if($temp->isInscrit) {
                             $temp->action[] = ['path' => '/sortie/unsubscribe/', 'name' => 'Se désister'];
                         }
                     }
@@ -172,7 +172,7 @@ class HomeController extends AbstractController
 
                 $json = $serializer->serialize($sorty, 'json', $context);
 
-                $listDetail[] = "[".$json . ", {\"countParticipant\":" . $temp->countParticipant . ", \"isInscrit\": ". $temp->isIncrit . ", \"action\": ". json_encode($temp->action) ."}]";
+                $listDetail[] = "[".$json . ", {\"countParticipant\":" . $temp->countParticipant . ", \"isInscrit\": ". $temp->isInscrit . ", \"action\": ". json_encode($temp->action) ."}]";
             }
         }
 

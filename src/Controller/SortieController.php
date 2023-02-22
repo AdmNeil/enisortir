@@ -223,7 +223,7 @@ class SortieController extends AbstractController
 
             $em->flush();
 
-            $this->addFlash('info', 'La Sortie à bien été annulé');
+            $this->addFlash('info', 'La sortie a bien été annulée');
 
             return $this->redirectToRoute('home_index');
         }
@@ -409,6 +409,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
 
+        $this->addFlash('success', 'Sortie publiée');
         return $this->redirectToRoute('home_index');
     }
 
