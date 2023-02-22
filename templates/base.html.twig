@@ -13,7 +13,6 @@
     <header class="top-bar">
         <nav>
             <div class="logo">
-{#                <h1>{{ app.request.server.get('NAME_SITE') }}</h1>#}
                 <img src="{{ asset('img/logo/logo-enisortir.png') }}" alt="logo ENISortir">
             </div>
             <div class="nav-container">
@@ -27,9 +26,6 @@
                         <a href="{{ path('sortie_index') }}">Créer une sortie</a>
                     </div>
                 {% endif %}
-            {% endif %}
-        </div>
-    </nav>
                 <div>
                     <a href="{{ path('home_index') }}">Accueil</a>
                 </div>
