@@ -3,7 +3,7 @@
 {% block title %}{{ parent() }} | Sortie{% endblock %}
 
 {% block body %}
-    <h1>Créer une Sortie</h1>
+    <h1>{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modifier une Sotie' : 'Créer une Sortie' }}</h1>
     {{ form_start(sortieForm) }}
     <div>
         {{ form_row(sortieForm._token) }}

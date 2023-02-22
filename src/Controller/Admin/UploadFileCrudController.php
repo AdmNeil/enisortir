@@ -5,17 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Participant;
 use App\Entity\Site;
 use App\Entity\UploadFile;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class UploadFileCrudController extends AbstractCrudController
@@ -26,23 +19,18 @@ class UploadFileCrudController extends AbstractCrudController
     {
         return UploadFile::class;
     }
-
-
     public function configureFields(string $pageName): iterable
     {
         return [
             yield ImageField::new('fileAddUser')->setUploadDir(self::PATH)
         ];
     }
-
     public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
     {
         $this->readFile($context->getRequest()->files->get('UploadFile')['fileAddUser']['file']->getClientOriginalName());
 
         return parent::getRedirectResponseAfterSave($context, $action);
     }
-
-
     private function readFile($fileName)
     {
         $filePath = $this->getParameter('kernel.project_dir') . '/' . self::PATH.$fileName;

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -14,21 +15,26 @@ class Sortie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['show_sortie'])]
     private ?int $id = null;
 
+    #[Groups(['show_sortie'])]
     #[ORM\Column(length: 30)]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_sortie'])]
     private ?\DateTimeInterface $dateHeureDeb = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['show_sortie'])]
     private ?\DateTimeInterface $dateCloture = null;
 
     #[ORM\Column]
+    #[Groups(['show_sortie'])]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -36,6 +42,7 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Etat $etat = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
@@ -44,13 +51,16 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Site $site = null;
 
     #[ORM\ManyToOne(inversedBy: 'sortiesOrganisateur')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['show_sortie'])]
     private ?Participant $organisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sortiesParticipant')]
+    //#[Groups(['show_sortie'])]
     private Collection $participants;
 
     public function __construct()

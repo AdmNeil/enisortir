@@ -56,7 +56,7 @@ class SortieType extends AbstractType
                 'label' => 'Publier la sortie'
             ])
             ->add('removeSortie', SubmitType::class, [
-                'label' => 'Annuler la sortie'
+                'label' => 'Supprimer la sortie'
             ])
             ->add('annuleSortie', SubmitType::class, [
                 'label' => 'Enregistrer'

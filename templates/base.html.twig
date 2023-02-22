@@ -27,21 +27,39 @@
                 <div>
                     <a href="{{path('app_logout')}}">Se déconnecter</a>
                 </div>
+                {% if app.request.attributes.get('_route') == 'home_index' %}
+                    <div>
+                        <a href="{{ path('sortie_index') }}">Créer une sortie</a>
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </nav>
     <main>
         {% block body %}{% endblock %}
+        <ul class="circles">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
     </main>
     <div class="message">
         {% for title, messages in app.flashes %}
-            <div>
+            <div class="un-popup">
                 {% for message in messages %}
                     <p class="comment {{ title }}">{{ message }}</p>
                 {% endfor %}
             </div>
         {% endfor %}
     </div>
+    {% block template %}{% endblock %}
     <script src="{{ asset('/js/script.js') }}"></script>
     </body>
 </html>
