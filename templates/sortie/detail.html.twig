@@ -72,8 +72,8 @@
                         </div>
                         {% for participant in sortie.participants %}
                             <div class="element">
-                                <div>{{ participant.username }}</div>
-                                <div>{{ participant.prenom }} {{ participant.nom }}</div>
+                                <div><a href="{{ path('profile_show', {'id': participant.id}) }} ">{{ participant.username }}</a></div>
+                                <div><a href="{{ path('profile_show', {'id': participant.id}) }} ">{{ participant.prenom }} {{ participant.nom }}</a></div>
                             </div>
                         {% endfor %}
                     </article>
