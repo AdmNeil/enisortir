@@ -117,7 +117,8 @@ main {
     margin: 2rem 10%;
 }
 
-.form-login, .form-update-profile, .form-update-sortie  {
+.form-login, .form-update-profile, .display-myprofile-container, .show-profile-container, .form-update-sortie {
+
     font-weight: bold;
     background-color: white;
     padding: 30px;
@@ -135,9 +136,9 @@ form .separation, .separation{
     margin-top: 5px;
 }
 
-form .corps-formulaire{
+form .corps-formulaire {
     margin-bottom: 30px;
-  }
+}
 
 form .corps-formulaire .groupe, .form-update-profile .groupe, .groupe {
    position: relative;
@@ -148,7 +149,7 @@ form .corps-formulaire .groupe, .form-update-profile .groupe, .groupe {
 
 form .corps-formulaire .groupe input,  input, .input {
     margin-top: 5px;
-    padding: 10px 5px 10px 30px;
+    padding: 10px 30px 10px 30px;
     border : 1px solid #c9c9c9;
     outline-color: #005185;
     border-radius: 5px;
@@ -162,7 +163,7 @@ form .corps-formulaire .groupe i{
     color: #005185 ;
 }
 
-form .pied-form button, .btn-enregitrer, .btn-annuler, .pied .button {
+form .pied-form button, .btn-enregitrer, .btn-annuler, .pied .button, .btn-modifier, .btn-retour {
     margin-top: 10px;
     background-color: #005185;
     color: white;
@@ -243,14 +244,14 @@ form .pied-form button:hover{
     margin-bottom: 20px;
 }
 
-.groupe-update-profile form{
+.groupe-update-profile form, .display-myprofile-info, .show-profile-info{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: "a b" "c c";
     grid-gap: 1rem;
 }
 
-.pied-form-update-profile{
+.pied-form-update-profile, .pied-form-display-myprofile, .pied-form-show-profile{
     text-align: center;
     grid-area: c;
 }
@@ -273,4 +274,23 @@ form .pied-form button:hover{
     margin-top: 1rem;
 }
 
+/*CSS PAGE PROFILE @ME */
+.myprofil-info-groupe, .show-profile-info-groupe{
+    position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
 
+.display-myprofile-info img, .show-profile-info-groupe img{
+    border-radius: 50%;
+    /*width: 100%;*/
+    /*min-height: 10vh;*/
+    max-height: 20vh;
+    /*min-width: 10vh;*/
+    max-width: 20vh;
+}
+
+.display-myprofile-info, .show-profile-info{
+    grid-gap: 3rem;
+}

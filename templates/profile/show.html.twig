@@ -1,13 +1,42 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="show-profile-container">
     <h1> {{ participant.username }} </h1>
-    <div><img src="{{ asset('/img/img-users/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
-    <div>Prénom :  {{ participant.prenom }}</div>
-    <div>Nom : {{ participant.nom }} </div>
-    <div>Téléphone : {{ participant.telephone }} </div>
-    <div>Email : {{ participant.mail }}</div>
-    <button><a href="{{ path('home_index') }}">Annuler</a></button>
+    <div class="separation"></div>
+    <div class="show-profile-info">
+        <div class="partie-gauche" style="grid-area: a">
+            <div class="show-profile-info-groupe">
+            <div><img src="{{ asset('/img/img-users/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
+            </div>
+        </div>
+        <div class="partie-droite" style="grid-area: b">
+            <div class="show-profile-info-groupe">
+                <div class="label">Prénom :</div>
+                <div class="input">{{ participant.prenom }}</div>
+            </div>
+            <div class="show-profile-info-groupe">
+                <div class="label">Nom : </div>
+                <div class="input">{{ participant.nom }}</div>
+            </div>
+            <div class="show-profile-info-groupe">
+                <div class="label"> Téléphone : </div>
+                <div class="input">{{ participant.telephone }}</div>
+            </div>
+            <div class="show-profile-info-groupe">
+                <div class="label">Email : </div>
+                <div class="input">{{ participant.mail }}</div>
+            </div>
+            <div class="show-profile-info-groupe">
+                <div class="label">Site : </div>
+                <div class="input">{{ participant.site }}</div>
+            </div>
+        </div>
+        <div class="pied-form-show-profile">
+            <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="btn-retour"></a>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block title %}
