@@ -117,7 +117,7 @@ main {
     margin: 2rem 10%;
 }
 
-.form-login, .form-update-profile {
+.form-login, .form-update-profile, .form-update-sortie  {
     font-weight: bold;
     background-color: white;
     padding: 30px;
@@ -233,12 +233,13 @@ form .pied-form button:hover{
     vertical-align: center;
 }
 .pied {
-    text-align: center;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 /*CSS PAGE UPDATE PROFILE */
 
-.groupe-update-profile input{
+.groupe-update-profile input, .groupe-update-sortie input{
     margin-bottom: 20px;
 }
 
@@ -264,5 +265,12 @@ form .pied-form button:hover{
     margin-top: 5px;
 }
 
+/*CSS PAGE CREATE-UPDATE SORTIE */
+.groupe-update-sortie {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 2rem;
+    margin-top: 1rem;
+}
 
 
