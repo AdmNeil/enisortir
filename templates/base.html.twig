@@ -21,11 +21,6 @@
                         <a href="{{ path('admin') }}">Admin</a>
                     {% endif %}
                 </div>
-                {% if app.request.attributes.get('_route') == 'home_index' %}
-                    <div>
-                        <a href="{{ path('sortie_index') }}">Créer une sortie</a>
-                    </div>
-                {% endif %}
                 <div>
                     <a href="{{ path('home_index') }}">Accueil</a>
                 </div>
