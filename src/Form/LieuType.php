@@ -19,12 +19,18 @@ class LieuType extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Lieu',
+                'attr' => ['class' => "groupe"]
             ])
             ->add('rue', TextType::class, [
-                'attr' => ['list' => 'adresseList']
+                'attr' => ['list' => 'adresseList', 'class' => "groupe"]
             ])
-            ->add('latitude')
-            ->add('longitude')
+//            ->add('ville', VilleType::class)
+            ->add('latitude', null, [
+                'attr' => ['class' => "groupe"]
+            ])
+            ->add('longitude', null, [
+                'attr' => ['class' => "groupe"]
+            ])
         ;
     }
 

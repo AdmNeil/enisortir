@@ -3,35 +3,42 @@
 {% block title %}{{ parent() }} | Sortie{% endblock %}
 
 {% block body %}
-    <h1>{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modifier une Sotie' : 'Créer une Sortie' }}</h1>
-    {{ form_start(sortieForm) }}
-    <div>
-        {{ form_row(sortieForm._token) }}
-        {{ form_row(sortieForm.nom) }}
-        {{ form_row(sortieForm.dateHeureDeb) }}
-        {{ form_row(sortieForm.dateCloture) }}
-        {{ form_row(sortieForm.nbInscriptionsMax) }}
-        {{ form_row(sortieForm.duree) }}
-        {{ form_row(sortieForm.infosSortie) }}
-    </div>
-    <div>
-        {{ form_row(sortieForm.site) }}
-        {{ form_row(villeForm.nom) }}
-        {{ form_row(lieuForm.nom) }}
-        {{ form_row(lieuForm.rue) }}
-        {{ form_row(villeForm.codePostal) }}
-        {{ form_row(lieuForm.latitude) }}
-        {{ form_row(lieuForm.longitude) }}
-        <div>
+    <div class="form-update-sortie">
+        <h1>{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modification sortie' : 'Nouvelle sortie' }}</h1>
+        <div class="separation"></div>
+        {{ form_start(sortieForm) }}
+        <div class="groupe-update-sortie">
+            <div>
+                {{ form_row(sortieForm._token) }}
+                {{ form_row(sortieForm.nom) }}
+                {{ form_row(sortieForm.dateHeureDeb) }}
+                {{ form_row(sortieForm.infosSortie) }}
+            </div>
+            <div>
+                {{ form_row(sortieForm.duree) }}
+                {{ form_row(sortieForm.dateCloture) }}
+                {{ form_row(sortieForm.nbInscriptionsMax) }}
+                {{ form_row(sortieForm.site) }}
+                {#                {{ form_row(sortieForm.lieu) }} #}
+                {{ form_row(lieuForm.nom) }}
+            </div>
+            <div>
+                {{ form_row(villeForm.nom) }}
+                {{ form_row(lieuForm.rue) }}
+                {{ form_row(villeForm.codePostal) }}
+                {{ form_row(lieuForm.latitude) }}
+                {{ form_row(lieuForm.longitude) }}
+            </div>
+        </div>
+        <div class="pied">
             {{ form_row(sortieForm.saveSortie) }}
             {{ form_row(sortieForm.publishSortie) }}
-
             {% if app.request.attributes.get('_route') == 'sortie_update' %}
                 {{ form_row(sortieForm.removeSortie) }}
             {% endif %}
-
-            <a href="{{ path('home_index') }}">Annuler</a>
+            <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="button"></a>
         </div>
+    </div>
     </div>
     {{ form_end(sortieForm, {'render_rest': false}) }}
 {% endblock %}

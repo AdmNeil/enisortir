@@ -6,23 +6,48 @@
 
 
 {% block body %}
-       <h1> {{ app.user.username }} </h1>
-    <br>
-    <div> Prénom:  {{ app.user.prenom }}</div>
-    <br>
-    <div>Nom: {{ app.user.nom }} </div>
-    <br>
-    <div>Téléphone: {{ app.user.telephone }} </div>
-    <br>
-    <div>Email: {{ app.user.mail }}</div>
-    <br>
-    <div> Ma photo:
-        <img src="{{ asset('/img/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
-    </div>
-    <br>
-    <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"></a>
-    <a href="{{ path('home_index') }}"><input type="button" value="Retour"></a>
 
+{#    <div class="example-wrapper">#}
+{#        <h1>Bonjour {{ app.user.username }} ! ✅</h1>#}
+{#    </div>#}
+{#    #}
+<div class="display-myprofile-container">
+    <h1> {{ app.user.username }} </h1>
+    <div class="separation"></div>
+    <div class="display-myprofile-info">
+        <div class="partie-droite" style="grid-area: b">
+            <div class="myprofil-info-groupe">
+                <div class="label">Prénom : </div>
+                <div class="input">{{ app.user.prenom }}</div>
+            </div>
+            <div class="myprofil-info-groupe">
+                <div class="label">Nom: </div>
+                <div class="input"> {{ app.user.nom }}</div>
+            </div>
+            <div class="myprofil-info-groupe">
+                <div class="label">Téléphone: </div>
+                <div class="input">{{ app.user.telephone }}</div>
+            </div>
+            <div class="myprofil-info-groupe">
+                <div class="label">Email: </div>
+                <div class="input">{{ app.user.mail }}</div>
+            </div>
+            <div class="myprofil-info-groupe">
+                <div class="label">Site: </div>
+                <div class="input">{{ app.user.site }}</div>
+            </div>
+        </div>
+        <div class="partie-gauche" style="grid-area: a">
+            <div class="myprofil-info-groupe">
+                <img src="{{ asset('/img/img-users/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
+            </div>
+        </div>
+        <div class="pied-form-display-myprofile">
+            <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"  class="btn-modifier"></a>
+            <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="btn-retour"></a>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 

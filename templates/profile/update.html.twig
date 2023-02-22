@@ -5,14 +5,31 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Modifier mon profil</h1>
-    <div>
-        {{ form_start(participantForm) }}
-        {{ form_widget(participantForm) }}
-        <input type="submit" value="Enregistrer">
-        <a href="{{ path('profile_myprofile')}}"><input type="button" value="Annuler"></a>
-       {{ form_end(participantForm) }}
+
+    <div class="form-update-profile">
+        <h1>Modifier mon profil</h1>
+        <div class="separation"></div>
+                <div class="groupe-update-profile">
+            {{ form_start(participantForm) }}
+                    <div class="partie-gauche" style="grid-area: a">
+                        <div class="groupe"> {{ form_row(participantForm.nom) }} </div>
+                        <div class="groupe"> {{ form_row(participantForm.prenom) }}  </div>
+                        <div class="groupe">  {{ form_row(participantForm.telephone) }}   </div>
+                        <div class="groupe"> {{ form_row(participantForm.mail) }} </div>
+                    </div>
+                    <div class="partie-droite" style="grid-area: b">
+                        <div class="groupe"> {{ form_row(participantForm.username) }} </div>
+                        <div class="groupe"> {{ form_row(participantForm.password) }} </div>
+                        <div class="groupe"> {{ form_row(participantForm.site) }} </div>
+                        <div class="groupe"> {{ form_row(participantForm.imageFile) }} </div>
+                    </div>
+            {{ form_widget(participantForm) }}
+            <div class="pied-form-update-profile">
+            <input type="submit" value="Enregistrer" class="btn-enregitrer">
+            <a href="{{ path('profile_myprofile')}}"><input type="button" value="Annuler" class="btn-annuler"></a>
+            </div>
+           {{ form_end(participantForm) }}
+              </div>
     </div>
+
 {% endblock %}
-
-
