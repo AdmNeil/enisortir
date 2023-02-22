@@ -117,7 +117,7 @@ main {
     margin: 2rem 10%;
 }
 
-.form-login, .form-update-profile {
+.form-login, .form-update-profile, .display-myprofile-container {
     font-weight: bold;
     background-color: white;
     padding: 30px;
@@ -148,7 +148,7 @@ form .corps-formulaire .groupe, .form-update-profile .groupe{
 }
 
 
-form .corps-formulaire .groupe input,  input {
+form .corps-formulaire .groupe input,  input{
     margin-top: 5px;
     padding: 10px 5px 10px 30px;
     border : 1px solid #c9c9c9;
@@ -164,7 +164,7 @@ form .corps-formulaire .groupe i{
     color: #005185 ;
 }
 
-form .pied-form button, .btn-enregitrer, .btn-annuler{
+form .pied-form button, .btn-enregitrer, .btn-annuler, .btn-modifier, .btn-retour{
     margin-top: 10px;
     background-color: #005185;
     color: white;
@@ -187,14 +187,14 @@ form .pied-form button:hover{
     margin-bottom: 20px;
 }
 
-.groupe-update-profile form{
+.groupe-update-profile form, .display-myprofile-info{
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: "a b" "c c";
     grid-gap: 1rem;
 }
 
-.pied-form-update-profile{
+.pied-form-update-profile, .pied-form-display-myprofile{
     text-align: center;
     grid-area: c;
 }
@@ -209,4 +209,20 @@ form .pied-form button:hover{
     margin-top: 5px;
 }
 
+/*CSS PAGE PROFILE @ME */
+.myprofil-info-groupe{
+    position: relative;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.display-myprofile-info img{
+    border-radius: 50%;
+    width: 100%;
+}
+
+.display-myprofile-info{
+    grid-gap: 3rem;
+}
 
