@@ -428,13 +428,13 @@ form .pied-form button:hover{
 }
 
 #profile_password_first{
-    display: inherit
-    /*margin-top: 5px;*/
+    display: inherit;
+    margin-top: 20px;
 }
 
 #profile_password_second{
     display: inherit;
-    margin-top: 5px;
+    margin-top: 20px;
 }
 
 /*CSS PAGE CREATE-UPDATE SORTIE */
@@ -465,3 +465,4 @@ form .pied-form button:hover{
 .display-myprofile-info, .show-profile-info{
     grid-gap: 3rem;
 }
+

@@ -113,10 +113,9 @@
                                 {% if sortie.etat.libelle == 'En création' and sortie.organisateur == app.user %}
                                     <a href="{{ path('sortie_update', {'id': sortie.id}) }}">Modifier</a>
                                     <span>/</span>
-                                    {#  <a href="{{ path('activity_publish', {'id': sortie.id}) }}"> #}
-                                    <a href="#">Publier</a>
+                                    <a href="{{ path('sortie_publish', {'id': sortie.id}) }}">Publier</a>
                                 {% else %}
-                                    <a href="#">Afficher</a>
+                                    <a href="{{ path('sortie_detail', {'id': sortie.id}) }}">Afficher</a>
                                     {% if sortie.etat.libelle == 'Ouvert' %}
                                         {% if isInscrit %}
                                             <span>/</span>
