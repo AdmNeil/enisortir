@@ -70,7 +70,7 @@ class Script {
                 }
 
                 if ('content' in document.createElement('template')) {
-                    let listSortie = document.getElementsByClassName(`main-list-filter`)[0];
+                    let listSortie = document.getElementsByClassName(`main-list-sorties`)[0];
 
                     this.removeAll(listSortie);
 

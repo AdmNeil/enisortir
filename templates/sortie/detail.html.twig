@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-
+    {% set today = "now" %}
     <div class="cadre-sortie">
         <h1>{{ sortie.nom }}</h1>
         <div class="separation"></div>
@@ -81,6 +81,9 @@
             </div>
         </div>
         <div class="pied">
+            {% if sortie.dateHeureDeb > today and sortie.organisateur == app.user %}
+                <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}"><input class="button" type="button" value="Annuler"></a>
+            {% endif %}
             <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
         </div>
     </div>
