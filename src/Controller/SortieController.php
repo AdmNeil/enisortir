@@ -203,14 +203,27 @@ class SortieController extends AbstractController
         return $this->render('sortie/index.html.twig', compact('sortieForm', 'lieuForm', 'villeForm'));
     }
 
+    /** Passage à l'état "Annulé" d'une sortie à l'état "Ouvert/Cloturé"
+     * par l'utilisateur connecté si c'est l'organisateur
+     * @param int $id
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param SortieRepository $sortieRepository
+     * @param LieuRepository $lieuRepository
+     * @param VilleRepository $villeRepository
+     * @param ParticipantRepository $participantRepository
+     * @param MailService $mailService
+     * @return Response
+     */
     #[Route('/@delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
-    public function delete(int $id, EntityManagerInterface $em, Request $request, EtatRepository $etatRepository, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, ParticipantRepository $participantRepository): Response
+    public function delete(int $id, EntityManagerInterface $em, Request $request, EtatRepository $etatRepository, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, ParticipantRepository $participantRepository, MailService $mailService): Response
     {
         $user = $participantRepository->findOneBy(['username' => $this->getUser()->getUserIdentifier()]);
         $findMySortie = $sortieRepository->findOneBy(['organisateur' => $user, 'id' => $id]);
 
         if ($findMySortie === null) {
-            $this->addFlash('error', "Vous n'êtes pas l'organisateur(trice) de cette sortie");
+            $this->addFlash('error', "Vous n'êtes pas l'organisateur(trice) de cette sortie (". $id ." !");
             return $this->redirectToRoute('home_index');
         }
 
@@ -220,7 +233,7 @@ class SortieController extends AbstractController
 //        $dateStartEvent = new DateTime($findMySortie->getDateHeureDeb()->format('Y-m-d h:i'));
 
         // si sortie non commencée, possibilité pour l'organisateur de l'annuler
-        if ($findMyEtat->getId() !== 2 || $findMyEtat->getId() !== 3 /* || $datecloture >= $dateStartEvent */) {
+        if ($findMyEtat->getId() !== 2 && $findMyEtat->getId() !== 3 /* || $datecloture >= $dateStartEvent */) {
 //            $this->addFlash('error', "L'état du formulaire Sortie ne peut être annulé");
             $this->addFlash('error', 'Annulation impossible : sortie à l\'état ' . $findMySortie->getEtat()->getLibelle() . ' /  !');
             return $this->redirectToRoute('home_index');
@@ -231,13 +244,19 @@ class SortieController extends AbstractController
         if ($request->getMethod() === "POST" && $request->isSecure() === true) {
             $etatFind = $etatRepository->findOneBy(['id' => 6]);
 
-            $findMySortie->setInfosSortie($request->request->all('sortie')['infosSortie']);
+            //Motif d'annulation stocké dans la description
+            $motif = $request->request->all('sortie')['infosSortie'];
+            $findMySortie->setInfosSortie($motif);
             $findMySortie->setEtat($etatFind);
 
+            //Envoi d'un mail automatique d'annulation de l'organisateur aux participants
+            foreach ($findMySortie->getParticipants() as $participant) {
+                $mailService->sendMailCancel($user->getMail(), $participant->getMail(), $findMySortie);
+            }
             $em->flush();
 
-            $this->addFlash('info', 'La sortie a bien été annulée');
-
+            $this->addFlash('info', 'Sortie annulée');
+            $this->addFlash('success', 'Un mail a été envoyé aux participants.');
             return $this->redirectToRoute('home_index');
         }
 
@@ -440,51 +459,51 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('home_index');
     }
 
-    /** Passage à l'état "Annulé" d'une sortie à l'état "Ouvert/Cloturé"
-     * par l'utilisateur connecté si c'est l'organisateur
-     * @param int $id
-     * @param SortieRepository $sortieRepository
-     * @param ParticipantRepository $participantRepository
-     * @param EtatRepository $etatRepository
-     * @param EntityManagerInterface $em
-     * @return Response
-     */
-    #[Route('/cancel/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
-    public function cancel(int                    $id,
-                           SortieRepository       $sortieRepository,
-                           ParticipantRepository  $participantRepository,
-                           EtatRepository         $etatRepository,
-                           EntityManagerInterface $em,
-                           MailService            $mailService): Response
-    {
-        $sortie = $sortieRepository->findOneBy(["id" => $id]);
-
-        if (is_null($sortie)) {
-            $this->addFlash('error', 'Annulation impossible - sortie (' . $id . ') inexistante !');
-            return $this->redirectToRoute('home_index');
-        }
-        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
-        if ($utilisateur !== $sortie->getOrganisateur()) {
-            $this->addFlash('error', 'Annulation réalisable uniquement par l\'organisateur !');
-            return $this->redirectToRoute('home_index');
-        }
-        // Annulation possible seulement si la sortie est à l'état "2-Ouvert" ou "3-Clôturé"
-        if ($sortie->getEtat()->getId() === 2 || $sortie->getEtat()->getId() === 3) {
-            $etatOuvert = $etatRepository->findOneBy(["id" => 6]);  //passage à l'état "Annulé"
-            $sortie->setEtat($etatOuvert);
-            $em->persist($sortie);
-            $em->flush();
-            //Envoi d'un mail automatique d'annulation de l'organisateur aux participants
-            foreach ($sortie->getParticipants() as $participant) {
-                $mailService->sendMailCancel($utilisateur->getMail(), $participant->getMail(), $sortie);
-            }
-        } else {
-            $this->addFlash('error', 'Annulation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
-            return $this->redirectToRoute('home_index');
-        }
-
-        $this->addFlash('success', 'Sortie annulée');
-        return $this->redirectToRoute('home_index');
-    }
+//    /** Passage à l'état "Annulé" d'une sortie à l'état "Ouvert/Cloturé"
+//     * par l'utilisateur connecté si c'est l'organisateur
+//     * @param int $id
+//     * @param SortieRepository $sortieRepository
+//     * @param ParticipantRepository $participantRepository
+//     * @param EtatRepository $etatRepository
+//     * @param EntityManagerInterface $em
+//     * @return Response
+//     */
+//    #[Route('/cancel/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
+//    public function cancel(int                    $id,
+//                           SortieRepository       $sortieRepository,
+//                           ParticipantRepository  $participantRepository,
+//                           EtatRepository         $etatRepository,
+//                           EntityManagerInterface $em,
+//                           MailService            $mailService): Response
+//    {
+//        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+//
+//        if (is_null($sortie)) {
+//            $this->addFlash('error', 'Annulation impossible - sortie (' . $id . ') inexistante !');
+//            return $this->redirectToRoute('home_index');
+//        }
+//        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+//        if ($utilisateur !== $sortie->getOrganisateur()) {
+//            $this->addFlash('error', 'Annulation réalisable uniquement par l\'organisateur !');
+//            return $this->redirectToRoute('home_index');
+//        }
+//        // Annulation possible seulement si la sortie est à l'état "2-Ouvert" ou "3-Clôturé"
+//        if ($sortie->getEtat()->getId() === 2 || $sortie->getEtat()->getId() === 3) {
+//            $etatOuvert = $etatRepository->findOneBy(["id" => 6]);  //passage à l'état "Annulé"
+//            $sortie->setEtat($etatOuvert);
+//            $em->persist($sortie);
+//            $em->flush();
+//            //Envoi d'un mail automatique d'annulation de l'organisateur aux participants
+//            foreach ($sortie->getParticipants() as $participant) {
+//                $mailService->sendMailCancel($utilisateur->getMail(), $participant->getMail(), $sortie);
+//            }
+//        } else {
+//            $this->addFlash('error', 'Annulation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
+//            return $this->redirectToRoute('home_index');
+//        }
+//
+//        $this->addFlash('success', 'Sortie annulée');
+//        return $this->redirectToRoute('home_index');
+//    }
 
 }
