@@ -35,6 +35,7 @@ class ProfileType extends AbstractType
                 'attr' => ['class' => "groupe"]
             ] )
             ->add('username', TextType::class, [
+                'label' => 'Pseudo',
                 'attr' => ['class' => "groupe"]
             ])
             ->add('password', RepeatedType::class, [
