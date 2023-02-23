@@ -23,13 +23,12 @@ class SortieCrudController extends AbstractCrudController
             AssociationField::new('etat'),
             AssociationField::new('lieu'),
             AssociationField::new('site'),
-            TextField::new('organisateur'),
+            AssociationField::new('organisateur'),
             TextField::new('nom'),
             IntegerField::new('duree'),
             DateTimeField::new('dateHeureDeb'),
             DateTimeField::new('dateCloture'),
             IntegerField::new('nbInscriptionsMax'),
-            TextField::new('urlPhoto'),
             TextField::new('infosSortie')
         ];
     }

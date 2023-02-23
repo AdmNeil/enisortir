@@ -18,7 +18,7 @@
         <div class="nav-container">
             <div class="block-user-menu">
                 <i class="colorCust fa-solid fa-user"></i>
-                <span class="nav-1">{{ app.user }}</span>
+                <span class="nav-1">{{ app.user.prenom~ " " ~ app.user.nom}}</span>
             </div>
             <div class="nav-2">
                 {% if is_granted('ROLE_ADMIN') %}

@@ -4,25 +4,25 @@
 
 {% block body %}
     <div class="form-update-sortie">
-        <h1>{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modification sortie' : 'Nouvelle sortie' }}</h1>
-        <div class="separation"></div>
-        {{ form_start(sortieForm) }}
+        <div class="border_bottom">
+            <h1 class="sortieH1">{{ app.request.attributes.get('_route') == 'sortie_update' ? 'Modification sortie' : 'Nouvelle sortie' }}</h1>
+        </div>
+        {{ form_start(sortieForm, { 'attr': { 'class': 'sortie-update' }}) }}
         <div class="groupe-update-sortie">
-            <div>
+            <div class="form-row">
                 {{ form_row(sortieForm._token) }}
                 {{ form_row(sortieForm.nom) }}
                 {{ form_row(sortieForm.dateHeureDeb) }}
                 {{ form_row(sortieForm.infosSortie) }}
             </div>
-            <div>
+            <div class="form-row">
                 {{ form_row(sortieForm.duree) }}
                 {{ form_row(sortieForm.dateCloture) }}
                 {{ form_row(sortieForm.nbInscriptionsMax) }}
                 {{ form_row(sortieForm.site) }}
-                {#                {{ form_row(sortieForm.lieu) }} #}
                 {{ form_row(lieuForm.nom) }}
             </div>
-            <div>
+            <div class="form-row">
                 {{ form_row(villeForm.nom) }}
                 {{ form_row(lieuForm.rue) }}
                 {{ form_row(villeForm.codePostal) }}
@@ -38,7 +38,6 @@
             {% endif %}
             <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="button"></a>
         </div>
-    </div>
     </div>
     {{ form_end(sortieForm, {'render_rest': false}) }}
 {% endblock %}

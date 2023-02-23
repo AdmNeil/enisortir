@@ -1,53 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Mon profil
-{% endblock %}
+{% block title %}{{ parent() }} | Mon profil{% endblock %}
 
 
 {% block body %}
-
-{#    <div class="example-wrapper">#}
-{#        <h1>Bonjour {{ app.user.username }} ! ✅</h1>#}
-{#    </div>#}
-{#    #}
-<div class="display-myprofile-container">
-    <h1> {{ app.user.username }} </h1>
-    <div class="separation"></div>
-    <div class="display-myprofile-info">
-        <div class="partie-droite" style="grid-area: b">
-            <div class="myprofil-info-groupe">
-                <div class="label">Prénom : </div>
-                <div class="input">{{ app.user.prenom }}</div>
-            </div>
-            <div class="myprofil-info-groupe">
-                <div class="label">Nom: </div>
-                <div class="input"> {{ app.user.nom }}</div>
-            </div>
-            <div class="myprofil-info-groupe">
-                <div class="label">Téléphone: </div>
-                <div class="input">{{ app.user.telephone }}</div>
-            </div>
-            <div class="myprofil-info-groupe">
-                <div class="label">Email: </div>
-                <div class="input">{{ app.user.mail }}</div>
-            </div>
-            <div class="myprofil-info-groupe">
-                <div class="label">Site: </div>
-                <div class="input">{{ app.user.site }}</div>
-            </div>
+    <div class="display-myprofile-container">
+        <div class="border_bottom">
+            <h1 class="profileH1">{{ app.user.username }}</h1>
         </div>
-        <div class="partie-gauche" style="grid-area: a">
-            <div class="myprofil-info-groupe">
-                <img src="{{ asset('/img/img-users/'~app.user.urlPhoto)}}" alt="Photo de profil de {{ app.user.username }}">
+        <div class="display-myprofile-info">
+            <div class="partie-droite" style="grid-area: b">
+                <div class="myprofil-info-groupe">
+                    <div class="labelBold">Prénom</div>
+                    <div class="inputProfile">{{ app.user.prenom }}</div>
+                </div>
+                <div class="myprofil-info-groupe">
+                    <div class="labelBold">Nom</div>
+                    <div class="inputProfile"> {{ app.user.nom }}</div>
+                </div>
+                <div class="myprofil-info-groupe">
+                    <div class="labelBold">Téléphone</div>
+                    <div class="inputProfile">{{ app.user.telephone }}</div>
+                </div>
+                <div class="myprofil-info-groupe">
+                    <div class="labelBold">Email</div>
+                    <div class="inputProfile">{{ app.user.mail }}</div>
+                </div>
+                <div class="myprofil-info-groupe">
+                    <div class="labelBold">Site</div>
+                    <div class="inputProfile">{{ app.user.site }}</div>
+                </div>
             </div>
-        </div>
-        <div class="pied-form-display-myprofile">
-            <a href="{{ path('profile_update') }}"><input type="button" value="Modifier"  class="btn-modifier"></a>
-            <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="btn-retour"></a>
+            <div class="partie-gauche" style="grid-area: a">
+                <div class="myprofil-info-groupe">
+                    {% if app.user.urlPhoto is not null %}
+                        <img src="{{ asset('/img/img-users/'~app.user.urlPhoto) }}"
+                             alt="Photo de profil de {{ app.user.username }}">
+                    {% else %}
+                        <img src="{{ asset('/img/default/user.svg') }}"
+                             alt="Photo de profil de {{ app.user.username }}">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="pied-form-display-myprofile">
+                <a href="{{ path('profile_update') }}"><input type="button" value="Modifier" class="btn-modifier"></a>
+                <a href="{{ path('home_index') }}"><input type="button" value="Retour" class="btn-retour"></a>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 
