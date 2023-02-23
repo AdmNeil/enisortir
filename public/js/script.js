@@ -12,6 +12,7 @@ class Script {
         this.is_function(this.getPathName);
         this.popup();
         this.nav();
+        this.konami();
     }
 
     is_function(path) {
@@ -40,21 +41,23 @@ class Script {
             }
         }
 
-        const main = document.getElementsByTagName(`main`)[0].offsetTop;
+        if (document.getElementsByClassName(`nav-container`)[0] !== undefined) {
+            const main = document.getElementsByTagName(`main`)[0].offsetTop;
 
-        initScroll(main);
+            initScroll(main);
 
-        window.addEventListener(`scroll`, () => initScroll(main));
+            window.addEventListener(`scroll`, () => initScroll(main));
 
-        let nav2 = document.getElementsByClassName(`nav-2`)[0];
+            let nav2 = document.getElementsByClassName(`nav-2`)[0];
 
-        document.getElementsByClassName(`block-user-menu`)[0].addEventListener(`click`, () => {
-            if (nav2.style.getPropertyValue(`--value2`) === '' || nav2.style.getPropertyValue(`--value2`) === 'none') {
-                nav2.style.setProperty(`--value2`, `grid`);
-            } else {
-                nav2.style.setProperty(`--value2`, `none`);
-            }
-        });
+            document.getElementsByClassName(`block-user-menu`)[0].addEventListener(`click`, () => {
+                if (nav2.style.getPropertyValue(`--value2`) === '' || nav2.style.getPropertyValue(`--value2`) === 'none') {
+                    nav2.style.setProperty(`--value2`, `grid`);
+                } else {
+                    nav2.style.setProperty(`--value2`, `none`);
+                }
+            });
+        }
     }
 
     filter() {
@@ -160,7 +163,7 @@ class Script {
     }
 
     home() {
-        if(document.getElementById(`filtre_home_site`).value !== 1 ||document.getElementById(`filtreNom`).value.trim().length !== 0 || document.getElementById(`filtreDateMin`).value !== "" || document.getElementById(`filtreDateMax`).value != null ) this.filter();
+        if (document.getElementById(`filtre_home_site`).value !== 1 || document.getElementById(`filtreNom`).value.trim().length !== 0 || document.getElementById(`filtreDateMin`).value !== "" || document.getElementById(`filtreDateMax`).value != null) this.filter();
 
         document.getElementById(`filtreSubmit`).addEventListener(`click`, () => this.filter());
 
@@ -193,6 +196,7 @@ class Script {
     sortie_new() {
         this.apiGetRue();
     }
+
     apiGetRue() {
         const V_n = document.getElementById('ville_nom');
         const L_r = document.getElementById('lieu_rue');
@@ -201,7 +205,7 @@ class Script {
         div.setAttribute(`class`, `containerRue`);
 
         L_r.addEventListener(`keyup`, e => {
-            if(e.target.value.length < 3) {
+            if (e.target.value.length < 3) {
                 return;
             }
 
@@ -243,6 +247,116 @@ class Script {
         });
 
         L_r.parentElement.appendChild(div);
+    }
+
+    konami() {
+        var allowedKeys = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down',
+            65: 'a',
+            66: 'b'
+        };
+
+// the 'official' Konami Code sequence
+        var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+
+// a variable to remember the 'position' the user has reached so far.
+        var konamiCodePosition = 0;
+
+// add keydown event listener
+        document.addEventListener('keydown', e => {
+            // get the value of the key code from the key map
+            var key = allowedKeys[e.keyCode];
+            // get the value of the required key from the konami code
+            var requiredKey = konamiCode[konamiCodePosition];
+
+            // compare the key with the required key
+            if (key === requiredKey) {
+
+                // move to the next key in the konami code sequence
+                konamiCodePosition++;
+
+                // if the last key is reached, activate cheats
+                if (konamiCodePosition === konamiCode.length) {
+                    this.matrixBg();
+
+                    let a = document.createElement(`div`);
+                    let b = document.createElement(`div`);
+                    let c = document.createElement(`div`);
+                    let d = document.createElement(`div`);
+                    let e = document.createElement(`div`);
+                    let f = document.createElement(`div`);
+                    let g = document.createElement(`div`);
+
+                    a.setAttribute(`class`, `cube`);
+                    b.setAttribute(`class`, `face top`);
+                    c.setAttribute(`class`, `face bottom`);
+                    d.setAttribute(`class`, `face left`);
+                    e.setAttribute(`class`, `face right`);
+                    f.setAttribute(`class`, `face front`);
+                    g.setAttribute(`class`, `face back`);
+
+                    a.appendChild(b);
+                    a.appendChild(c);
+                    a.appendChild(d);
+                    a.appendChild(e);
+                    a.appendChild(f);
+                    a.appendChild(g);
+
+                    document.getElementsByTagName(`main`)[0].remove();
+                    document.getElementsByTagName(`nav`)[0].remove();
+                    document.getElementsByTagName(`footer`)[0].remove();
+
+                    document.body.appendChild(a);
+
+                    konamiCodePosition = 0;
+                }
+            } else {
+                konamiCodePosition = 0;
+            }
+        });
+    }
+
+    matrixBg() {
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const fontSize = 16;
+        const texts = "ABCDEFGHIJKLMNOPQRSTUVXYZ".split("");
+        const columnCount = Math.ceil(canvas.width / fontSize);
+        const rowCount = Math.ceil(canvas.height / fontSize);
+
+        const rowStatus = [];
+        for (let i = 0; i < columnCount; i++) {
+            rowStatus[i] = Math.floor(Math.random() * rowCount) * -1;
+        }
+
+        function draw() {
+            ctx.fillStyle = "rgba(0,0,0,0.1)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const text = texts[Math.floor(Math.random() * texts.length)];
+            rowStatus.forEach((row, column) => {
+                ctx.fillStyle = "#48f613";
+                ctx.fillText(text, column * fontSize, row * fontSize);
+
+                rowStatus[column] += 1;
+                if (rowStatus[column] > rowCount) {
+                    rowStatus[column] = 0;
+                }
+            });
+        }
+
+        setInterval(draw, 100);
+
     }
 }
 
