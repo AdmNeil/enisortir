@@ -4,15 +4,18 @@ class Script {
     constructor() {
         this.getTitle = location.pathname;
         this.lastIndex = this.getTitle.lastIndexOf('/');
-        this.pathName = this.getTitle.match(/(?<=\/)[a-zA-Z]+(?=\/)?/g);
-        this.getPathName = this.pathName === null ? "home" : this.pathName[0];
+        this.pathName = this.getTitle.match(/(?<=\/)[a-zA-Z@]+(?=\/)?/g);
+
+        if (this.pathName !== null && this.pathName.length > 1) this.pathName = this.pathName.join('_').replace(`@`, ``);
+
+        this.getPathName = this.pathName === null ? "home" : this.pathName;
         this.is_function(this.getPathName);
         this.popup();
         this.nav();
     }
 
     is_function(path) {
-        if({}.toString.call(this[path]) === '[object Function]') this[path]();
+        if ({}.toString.call(this[path]) === '[object Function]') this[path]();
     }
 
     popup() {
@@ -28,7 +31,7 @@ class Script {
             let navContainer = document.getElementsByClassName(`nav-container`)[0];
             let logoImg = document.getElementsByClassName(`logo-img`)[0];
 
-            if(window.scrollY > _) {
+            if (window.scrollY > _) {
                 navContainer.style.setProperty("--background", "#ffffffd1");
                 logoImg.style.setProperty("--value1", "50px");
             } else {
@@ -46,7 +49,7 @@ class Script {
         let nav2 = document.getElementsByClassName(`nav-2`)[0];
 
         document.getElementsByClassName(`block-user-menu`)[0].addEventListener(`click`, () => {
-            if(nav2.style.getPropertyValue(`--value2`) === '' || nav2.style.getPropertyValue(`--value2`) === 'none') {
+            if (nav2.style.getPropertyValue(`--value2`) === '' || nav2.style.getPropertyValue(`--value2`) === 'none') {
                 nav2.style.setProperty(`--value2`, `grid`);
             } else {
                 nav2.style.setProperty(`--value2`, `none`);
@@ -77,22 +80,18 @@ class Script {
             formData.append('cochePassees', document.getElementById(`cochePassees`).checked);
 
             fetch("./filtre", {
-                method: "POST",
-                mode: "cors",
-                credentials: "same-origin",
-                body: formData
-            }).then(response => response.json()
-            ).then(body => {
-                if(body.error !== undefined) {
-                    if(body.error.site !== undefined) {
+                method: "POST", mode: "cors", credentials: "same-origin", body: formData
+            }).then(response => response.json()).then(body => {
+                if (body.error !== undefined) {
+                    if (body.error.site !== undefined) {
                         errSite.textContent = body.error.site;
                     }
 
-                    if(body.error.nom !== undefined) {
+                    if (body.error.nom !== undefined) {
                         errNom.textContent = body.error.nom;
                     }
 
-                    if(body.error.date !== undefined) {
+                    if (body.error.date !== undefined) {
                         errDate.textContent = body.error.date;
                     }
 
@@ -104,6 +103,14 @@ class Script {
 
                     this.removeAll(listSortie);
 
+                    if (body.length === 0) {
+                        let h3 = document.createElement(`h3`);
+
+                        h3.textContent = "Aucune sortie ne correspond à vos critères";
+
+                        return listSortie.appendChild(h3);
+                    }
+
                     for (let objr of body) {
                         let obj = JSON.parse(objr);
                         let prtcp = obj[0];
@@ -113,13 +120,16 @@ class Script {
                         const custDate = new Date(prtcp.dateHeureDeb);
 
                         clone.querySelector(`[tpl="nom"]`).textContent = prtcp.nom;
-                        clone.querySelector(`[tpl="debut"]`).textContent = custDate.toLocaleDateString() + " à " + custDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        clone.querySelector(`[tpl="debut"]`).textContent = custDate.toLocaleDateString() + " à " + custDate.toLocaleTimeString([], {
+                            hour: '2-digit', minute: '2-digit'
+                        });
                         clone.querySelector(`[tpl="cloture"]`).textContent = new Date(prtcp.dateCloture).toLocaleDateString();
                         clone.querySelector(`[tpl="inscpla"]`).textContent = `${cmplPrtcp.countParticipant} / ${prtcp.nbInscriptionsMax}`;
                         clone.querySelector(`[tpl="etat"]`).textContent = prtcp.etat.libelle;
                         clone.querySelector(`[tpl="organisateur"]`).textContent = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
+                        clone.querySelector(`[tpl="organisateur"]`).title = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
                         clone.querySelector(`[tpl="organisateur"]`).href = `/profile/show/${prtcp.organisateur.id}`;
-                        clone.querySelector(`[tpl="inscrit"]`).textContent =  cmplPrtcp.isInscrit === 0 ? `Non` : `Oui`;
+                        clone.querySelector(`[tpl="inscrit"]`).textContent = cmplPrtcp.isInscrit === 0 ? `Non` : `Oui`;
                         let action = clone.querySelector(`[tpl="action"]`);
 
                         for (const [i, uneAction] of Object.entries(cmplPrtcp.action)) {
@@ -127,8 +137,9 @@ class Script {
 
                             a.href = uneAction.path + prtcp.id;
                             a.textContent = uneAction.name;
+                            a.setAttribute(`class`, `custA`);
 
-                            if(i === cmplPrtcp.action.length -1 && cmplPrtcp.action.length -1) {
+                            if (parseInt(i) === cmplPrtcp.action.length - 1 && cmplPrtcp.action.length - 1) {
                                 let span = document.createElement(`span`);
 
                                 span.textContent = " / ";
@@ -146,7 +157,7 @@ class Script {
                     console.error("Vote navigateur ne peux pas gérer la balise template");
                 }
 
-            })//.catch(e => console.error(`Problème de réseau ou Parse: ${e}`));
+            }).catch(e => console.error(`Problème de réseau ou Parse: ${e}`));
         })
     }
 
@@ -160,23 +171,36 @@ class Script {
     }
 
     sortie() {
+        this.apiGetRue();
+    }
+
+    sortie_new() {
+        this.apiGetRue();
+    }
+    apiGetRue() {
         const V_n = document.getElementById('ville_nom');
         const L_r = document.getElementById('lieu_rue');
         let div = document.createElement('div');
 
-        div.setAttribute(`class`, `open`);
+        div.setAttribute(`class`, `containerRue`);
 
         L_r.addEventListener(`keyup`, e => {
+            if(e.target.value.length < 3) {
+                return;
+            }
+
             this.removeAll(div);
 
-            fetch(`https://api-adresse.data.gouv.fr/search/?q=${e.target.value} ${V_n.value}&type=street&autocomplete=0`, {
-                methode: 'GET',
-                mode: 'cors'
+            let clean = `${e.target.value} ${V_n.value}`.trim();
+
+            fetch(`https://api-adresse.data.gouv.fr/search/?q=${clean}&type=street&autocomplete=0`, {
+                methode: 'GET', mode: 'cors'
             }).then(resp => resp.json())
                 .then(body => {
-                    let adresseList = document.getElementsByClassName('open')[0];
+                    let adresseList = document.getElementsByClassName('containerRue')[0];
+                    adresseList.classList.add(`open`);
 
-                    if(adresseList.classList.contains('listCacher')) {
+                    if (adresseList.classList.contains('listCacher')) {
                         adresseList.classList.remove('listCacher');
                     }
 
@@ -184,6 +208,7 @@ class Script {
                         let objectAdresse = document.createElement('div');
                         let objectAdresseLabelle = document.createElement('p');
 
+                        objectAdresse.setAttribute(`class`, `listRue`)
                         objectAdresseLabelle.textContent = adresse.properties.label;
 
                         objectAdresseLabelle.addEventListener(`click`, () => {
@@ -208,11 +233,12 @@ class Script {
 (() => {
     const script = new Script();
 
-    if(!(script instanceof Object)) {
+    if (!(script instanceof Object)) {
         console.error(`Le Script n'est pas un Objet`);
         void 0;
     } else {
-        window.addEventListener("load", () => {}, {once: true});
+        window.addEventListener("load", () => {
+        }, {once: true});
         /*let data=window.performance.getEntriesByType("navigation")[0].type;
 
         if(data === "reload") {

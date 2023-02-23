@@ -22,7 +22,7 @@ class LieuType extends AbstractType
                 'attr' => ['class' => "groupe"]
             ])
             ->add('rue', TextType::class, [
-                'attr' => ['list' => 'adresseList', 'class' => "groupe"]
+                'attr' => ['list' => 'adresseList', 'class' => "groupe", "autocomplete" =>"off"]
             ])
 //            ->add('ville', VilleType::class)
             ->add('latitude', null, [

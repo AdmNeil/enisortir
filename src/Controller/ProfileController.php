@@ -79,7 +79,7 @@ class ProfileController extends AbstractController
                     );
                     $participant->setUrlPhoto($newFilename);
                 } catch (FileException $e) {
-                    dd($e);
+                    $this->addFlash('error', $e);
                 }
             }
 

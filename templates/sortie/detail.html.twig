@@ -1,82 +1,81 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Infos
-{% endblock %}
+{% block title %}{{ parent() }} | Infos{% endblock %}
 
 {% block body %}
     {% set today = "now" %}
     <div class="cadre-sortie">
-        <h1>{{ sortie.nom }}</h1>
-        <div class="separation"></div>
-        <div class="grid-sortie">
-            <div>
-                <div class="groupe">
-                    <div class="label">Prévue le :</div>
-                    <div class="input">{{ sortie.dateHeureDeb | date('d/m/Y H:i') }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Date limite d'inscription :</div>
-                    <div class="input">{{ sortie.dateCloture | date('d/m/Y') }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Nombre de places :</div>
-                    <div class="input">{{ sortie.nbInscriptionsMax }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Durée :</div>
-                    <div class="input"> {{ sortie.duree }} minutes</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Description :</div>
-                    <div class="input"> {{ sortie.infosSortie }}</div>
-                </div>
-            </div>
-            <div>
-                <div class="groupe">
-                    <div class="label">Ville organisatrice :</div>
-                    <div class="input"> {{ sortie.site }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Lieu :</div>
-                    <div class="input">{{ sortie.lieu.nom }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Rue :</div>
-                    <div class="input">{{ sortie.lieu.rue }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Code postal :</div>
-                    <div class="input">{{ sortie.lieu.ville.codePostal }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Ville :</div>
-                    <div class="input">{{ sortie.lieu.ville.nom }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Latitude :</div>
-                    <div class="input">{{ sortie.lieu.latitude ? sortie.lieu.latitude : '(non renseigné)' }}</div>
-                </div>
-                <div class="groupe">
-                    <div class="label">Longitude :</div>
-                    <div class="input">{{ sortie.lieu.longitude ? sortie.lieu.longitude : '(non renseigné)' }}</div>
-                </div>
-            </div>
-            <div class="case-participants">
-                <div class="liste-participants">
-                    <h3>Liste des participants</h3>
-                    <article class="grid-lst-participants">
-                        <div class="element bold">
-                            <div>Pseudo</div>
-                            <div>Nom</div>
+        <div class="border_bottom">
+            <h1 class="sortieH1" title="{{ sortie.nom }}">{{ sortie.nom }}</h1>
+            <details class="sortieDetail">
+                <summary>Liste des participants</summary>
+                <article class="grid-lst-participants">
+                    <div class="element bold">
+                        <div>Pseudo</div>
+                        <div>Nom</div>
+                    </div>
+                    {% for participant in sortie.participants %}
+                        <div class="element">
+                            <a class="listUser" href="{{ path('profile_show', {'id': participant.id}) }} ">
+                                <p>{{ participant.username }}</p>
+                                <p>{{ participant.prenom }} {{ participant.nom }}</p>
+                            </a>
                         </div>
-                        {% for participant in sortie.participants %}
-                            <div class="element">
-                                <div><a href="{{ path('profile_show', {'id': participant.id}) }} ">{{ participant.username }}</a></div>
-                                <div><a href="{{ path('profile_show', {'id': participant.id}) }} ">{{ participant.prenom }} {{ participant.nom }}</a></div>
-                            </div>
-                        {% endfor %}
-                    </article>
+                    {% endfor %}
+                </article>
+            </details>
+        </div>
+        <div class="grid-sortie">
+            <div class="sortie">
+                <div class="groupe">
+                    <div class="labelBold">Prévue le</div>
+                    <div class="inputSortie">{{ sortie.dateHeureDeb | date('d/m/Y H:i') }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Date limite d'inscription</div>
+                    <div class="inputSortie">{{ sortie.dateCloture | date('d/m/Y') }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Nombre de places</div>
+                    <div class="inputSortie">{{ sortie.nbInscriptionsMax }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Durée</div>
+                    <div class="inputSortie"> {{ sortie.duree }} minutes</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Description</div>
+                    <div class="inputSortie"> {{ sortie.infosSortie }}</div>
+                </div>
+            </div>
+            <div class="sortie">
+                <div class="groupe">
+                    <div class="labelBold">Ville organisatrice</div>
+                    <div class="inputSortie"> {{ sortie.site }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Lieu</div>
+                    <div class="inputSortie">{{ sortie.lieu.nom }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Rue</div>
+                    <div class="inputSortie">{{ sortie.lieu.rue }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Code postal</div>
+                    <div class="inputSortie">{{ sortie.lieu.ville.codePostal }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Ville</div>
+                    <div class="inputSortie">{{ sortie.lieu.ville.nom }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Latitude</div>
+                    <div class="inputSortie">{{ sortie.lieu.latitude ? sortie.lieu.latitude : '(non renseigné)' }}</div>
+                </div>
+                <div class="groupe">
+                    <div class="labelBold">Longitude</div>
+                    <div class="inputSortie">{{ sortie.lieu.longitude ? sortie.lieu.longitude : '(non renseigné)' }}</div>
                 </div>
             </div>
         </div>

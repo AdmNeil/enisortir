@@ -3,34 +3,33 @@
 {% block title %}{{ parent() }} | Supprimer{% endblock %}
 
 {% block body %}
-    <h1>Annuler une Sortie</h1>
-    {{ form_start(sortieForm) }}
-    <div>
-        {{ form_row(sortieForm._token) }}
-        <div>
-            <p>Nom de la sortie</p>
-            <p>{{ findMySortie.nom }}</p>
+    <div class="cadre-sortie">
+        <div class="border_bottom">
+            <h1>Annuler une Sortie</h1>
         </div>
-        <div>
-            <p>Date de la sortie</p>
-            <p>{{ findMySortie.dateHeureDeb | date('d/m/Y') }}</p>
-        </div>
-        <div>
-            <p>Ville organisatrice</p>
-            <p>{{ findMySortie.site.nom }}</p>
-        </div>
-        <div>
-            <p>Lieu</p>
-            <p>{{ findMySortie.lieu.nom }} {{ findMySortie.lieu.rue }} {{ findMySortie.lieu.ville.codePostal }} {{ findMySortie.lieu.ville.nom }}</p>
-        </div>
-        {{ form_row(sortieForm.infosSortie, { 'label': 'Motif' }) }}
-        <div>
-            {{ form_row(sortieForm.annuleSortie) }}
-
-            <a href="{{ path('home_index') }}">Retour</a>
-        </div>
+            {{ form_start(sortieForm, { 'attr': { 'class': 'sortie-delete' }}) }}
+            {{ form_row(sortieForm._token) }}
+            <div>
+                <p class="labelBold">Nom de la sortie</p>
+                <p class="inputDelete">{{ findMySortie.nom }}</p>
+            </div>
+            <div>
+                <p class="labelBold">Date de la sortie</p>
+                <p class="inputDelete">{{ findMySortie.dateHeureDeb | date('d/m/Y') }}</p>
+            </div>
+            <div>
+                <p class="labelBold">Ville organisatrice</p>
+                <p class="inputDelete">{{ findMySortie.site.nom }}</p>
+            </div>
+            <div>
+                <p class="labelBold">Lieu</p>
+                <p class="inputDelete">{{ findMySortie.lieu.nom }} {{ findMySortie.lieu.rue }} {{ findMySortie.lieu.ville.codePostal }} {{ findMySortie.lieu.ville.nom }}</p>
+            </div>
+            {{ form_row(sortieForm.infosSortie, { 'label': 'Motif', 'attr': { 'class': ''} }) }}
+            <div class="pied">
+                {{ form_row(sortieForm.annuleSortie, { 'attr': { 'class': 'button'}}) }}
+                <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
+            </div>
+            {{ form_end(sortieForm, {'render_rest': false}) }}
     </div>
-    {{ form_end(sortieForm, {'render_rest': false}) }}
 {% endblock %}
-
-

@@ -8,7 +8,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -43,16 +42,14 @@ class ProfileType extends AbstractType
                 'invalid_message' => 'Les mots de passe que vous avez saisis ne correspondent pas. Veuillez saisir votre mot de passe dans le champ "Passeword" et confirmer votre saisie dans le champ "Repeat Passeword".',
                 'required' => true,
                 'trim' => true,
-                'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmer mot de passe'],
-                'attr' => ['class' => "groupe"]
+                'first_options' => ['label' => 'Mot de passe', 'attr' => ['class' => "groupe inputProfile"]],
+                'second_options' => ['label' => 'Confirmer mot de passe', 'attr' => ['class' => "groupe inputProfile"]]
             ])
             ->add('site', EntityType::class, [
                 'class' => Site::class,
                 'choice_label' => 'nom',
                 'attr' => ['class' => "groupe"]
             ])
-            //->add('sortiesParticipant')
             ->add('imageFile', FileType::class, [
                 'label' => 'Profile picture',
                 'mapped' => false,
@@ -61,12 +58,13 @@ class ProfileType extends AbstractType
                     new file (['mimeTypes' => [
                         'image/jpeg',
                         'image/png',
-                        'image/svg+xml'
+                        'image/svg+xml',
+                        'image/webp'
                     ],
-                        'mimeTypesMessage' => 'Merci de charger un fichier image valide (.jpeg, .png, .svg)',
+                        'mimeTypesMessage' => 'Merci de charger un fichier image valide (.jpeg, .png, .svg, .webp)',
                     ])
                 ],
-                'attr' => ['class' => "groupe"]
+                'attr' => ['class' => "groupe", 'accept' => 'image/webp, image/jpeg, image/png, image/svg+xml']
                 ])
         ;
     }

@@ -1,35 +1,42 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ parent() }} | {{ participant.username }}{% endblock %}
+
 {% block body %}
 <div class="show-profile-container">
-    <h1> {{ participant.username }} </h1>
-    <div class="separation"></div>
+    <div class="border_bottom">
+        <h1 class="profileH1">Profil de {{ participant.username }}</h1>
+    </div>
     <div class="show-profile-info">
         <div class="partie-gauche" style="grid-area: a">
             <div class="show-profile-info-groupe">
-            <div><img src="{{ asset('/img/img-users/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}"></div>
+                {% if participant.urlPhoto is not null %}
+                    <img src="{{ asset('/img/img-users/'~participant.urlPhoto)}}" alt="Photo de profil de {{ participant.username }}">
+                {% else %}
+                    <img src="{{ asset('/img/default/user.svg')}}" alt="Photo de profil de {{ app.user.username }}">
+                {% endif %}
             </div>
         </div>
         <div class="partie-droite" style="grid-area: b">
             <div class="show-profile-info-groupe">
-                <div class="label">Prénom :</div>
-                <div class="input">{{ participant.prenom }}</div>
+                <div class="labelBold">Prénom</div>
+                <div class="inputProfile">{{ participant.prenom }}</div>
             </div>
             <div class="show-profile-info-groupe">
-                <div class="label">Nom : </div>
-                <div class="input">{{ participant.nom }}</div>
+                <div class="labelBold">Nom</div>
+                <div class="inputProfile">{{ participant.nom }}</div>
             </div>
             <div class="show-profile-info-groupe">
-                <div class="label"> Téléphone : </div>
-                <div class="input">{{ participant.telephone }}</div>
+                <div class="labelBold">Téléphone</div>
+                <div class="inputProfile">{{ participant.telephone }}</div>
             </div>
             <div class="show-profile-info-groupe">
-                <div class="label">Email : </div>
-                <div class="input">{{ participant.mail }}</div>
+                <div class="labelBold">Email</div>
+                <div class="inputProfile">{{ participant.mail }}</div>
             </div>
             <div class="show-profile-info-groupe">
-                <div class="label">Site : </div>
-                <div class="input">{{ participant.site }}</div>
+                <div class="labelBold">Site</div>
+                <div class="inputProfile">{{ participant.site }}</div>
             </div>
         </div>
         <div class="pied-form-show-profile">
@@ -38,8 +45,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block title %}
-
-{% endblock %}
-
