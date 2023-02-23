@@ -28,11 +28,8 @@
             {{ form_row(sortieForm.infosSortie, { 'label': 'Motif', 'attr': { 'class': ''} }) }}
             <div class="pied">
                 {{ form_row(sortieForm.annuleSortie, { 'attr': { 'class': 'button'}}) }}
-
-                <a href="{{ path('home_index') }}"><input class="button" type="button" value="Annuler"></a>
+                <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
             </div>
             {{ form_end(sortieForm, {'render_rest': false}) }}
     </div>
 {% endblock %}
-
-

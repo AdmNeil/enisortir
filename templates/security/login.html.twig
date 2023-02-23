@@ -4,21 +4,20 @@
 
 {% block body %}
 <form class="form-login" method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
     <div class="border_bottom">
         <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
-    </div>
+     </div>
+    {% if error %}
+        <div class="alert alert-danger">Pseudo ou mot de passe non valide.</div>
+    {% endif %}
     <div class="corps-formulaire">
         <div class="groupe">
-            <label class="labelBold" for="inputUsername">Username</label>
+            <label class="labelBold" for="inputUsername">Pseudo</label>
             <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
             <i class="fa-solid fa-user"></i>
         </div>
         <div class="groupe">
-            <label class="labelBold" for="inputPassword">Password</label>
+            <label class="labelBold" for="inputPassword">Mot de passe</label>
             <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <i class="fa-solid fa-lock"></i>
@@ -29,6 +28,9 @@
                     <input type="checkbox" name="_remember_me"> Se Souvenir
                 </label>
             </div>
+        </div>
+        <div class="groupe">
+            <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
         </div>
     </div>
     <div class="pied">

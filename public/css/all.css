@@ -829,3 +829,16 @@ form .pied-form button:hover {
 }
 
  */
+ 
+.corps-formulaire a {
+    text-decoration: underline;
+}
+
+.corps-formulaire a:hover{
+    color:#005185 ;
+}
+
+.alert{
+    color: red;
+    margin-top: 1rem;
+}

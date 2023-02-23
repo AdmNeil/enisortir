@@ -45,7 +45,7 @@ class SortieRepository extends ServiceEntityRepository
     /**
      * @throws \Exception
      */
-    public function findAllWithFilters (
+    public function findAllWithFilters(
         Site        $site,
         string      $filtreNom,
         bool        $filtreDates,
@@ -56,34 +56,41 @@ class SortieRepository extends ServiceEntityRepository
         bool        $cocheInscrit,
         bool        $cocheNonInscrit,
         bool        $cochePassees
-    ): array {
+    ): array
+    {
 
         $queryBuilder = $this->createQueryBuilder('sortie');
         //test si site existant
         if ($site->getId() > 0) {
             $queryBuilder->andWhere('sortie.site = :site')
-                         ->setParameter('site', $site)
-                         //sorties archivées non consultables
-                         ->andWhere('sortie.etat <> :etat')
-                         ->setParameter('etat', 7);
+                ->setParameter('site', $site)
+                //sorties annulées et archivées non consultables
+                ->andWhere('sortie.etat < :etat')
+                ->setParameter('etat', 6);
         }
         if ($filtreNom !== '') {
             $queryBuilder->andWhere('sortie.nom like :nom')
-                         ->setParameter('nom', '%'.$filtreNom.'%');
+                ->setParameter('nom', '%' . $filtreNom . '%');
         }
         if ($filtreDates) {
             $queryBuilder->andWhere('sortie.dateHeureDeb >= :dateMin')
-                         ->setParameter('dateMin', $dateMin)
-                         ->andWhere('sortie.dateHeureDeb <= :dateMax')
-                         ->setParameter('dateMax', $dateMax);
+                ->setParameter('dateMin', $dateMin)
+                ->andWhere('sortie.dateHeureDeb <= :dateMax')
+                ->setParameter('dateMax', $dateMax);
         }
 
         $querySorties = $queryBuilder->orderBy('sortie.dateHeureDeb', 'ASC')
 //          ->setMaxResults(10)
             ->getQuery()
-            ->getResult()
-        ;
-        //dump($querySorties);
+            ->getResult();
+
+        //Suppression des sorties à l'état "En création" dont l'utilisateur connecté n'est pas l'organisateur
+        foreach ($querySorties as $sortie) {
+            if ($sortie->getEtat()->getId() === 1 && $sortie->getOrganisateur() !== $utilisateur) {
+                unset($querySorties[array_search($sortie, $querySorties)]);
+            }
+        }
+
         //Gestion des cases à cocher par parcours du tableau de sorties issu de la requête
         // pour construire le tableau résultat
         if ($cocheOrganisateur || $cocheInscrit || $cocheNonInscrit || $cochePassees) {
@@ -101,13 +108,13 @@ class SortieRepository extends ServiceEntityRepository
                 foreach ($querySorties as $sortie) {
                     if (($sortie->getParticipants()->contains($utilisateur))
                         && !$sorties->contains($sortie)) {
-                       $sorties->add($sortie);
+                        $sorties->add($sortie);
                     }
                 }
             }
             if ($cocheNonInscrit) {
                 foreach ($querySorties as $sortie) {
-                    if ( !($sortie->getParticipants()->contains($utilisateur))
+                    if (!($sortie->getParticipants()->contains($utilisateur))
                         && !$sorties->contains($sortie)) {
                         $sorties->add($sortie);
                     }
@@ -126,14 +133,13 @@ class SortieRepository extends ServiceEntityRepository
                 }
             }
             $tabSorties = array();
-            if (! empty($sorties)) {
+            if (!empty($sorties)) {
                 foreach ($sorties as $sortie) {
                     $tabSorties[] = $sortie;
                 }
             }
             return $tabSorties;
-        }
-        else {
+        } else {
             return $querySorties;
         }
     }

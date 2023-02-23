@@ -8,6 +8,7 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Services\HomeFiltersCheck;
+use Exception;
 use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +24,10 @@ use Symfony\Component\Serializer\SerializerInterface;
 class HomeController extends AbstractController
 {
     /**
-     * @throws \Exception
+     * @param SortieRepository $sortieRepository
+     * @param ParticipantRepository $participantRepository
+     * @return Response
+     * @throws Exception
      */
     #[Route('/', name: '_index')]
     public function index(
@@ -71,7 +75,13 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @param Request $request
+     * @param SortieRepository $sortieRepository
+     * @param ParticipantRepository $participantRepository
+     * @param SiteRepository $siteRepository
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     * @throws Exception
      */
     #[Route('/filtre', name: '_filtre', methods: ['POST'])]
     public function filtre(Request $request, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, SiteRepository $siteRepository, SerializerInterface $serializer): JsonResponse
@@ -146,7 +156,7 @@ class HomeController extends AbstractController
                 $temp->action = [];
 
                 foreach ($sorty->getParticipants() as $participant) {
-                    if($participant->getNom() == $sorty->getOrganisateur()->getNom() && $participant->getPrenom() == $sorty->getOrganisateur()->getPrenom()) {
+                    if ($participant === $utilisateur) {
                         $temp->isInscrit = 1;
                     }
                 }

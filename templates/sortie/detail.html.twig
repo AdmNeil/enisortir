@@ -80,6 +80,18 @@
             </div>
         </div>
         <div class="pied">
+            {# si sortie à l'état Ouvert ou Clôturé, possibilité de s'inscrire/se désister  #}
+            {% if sortie.etat.id == 2 or sortie.etat.id == 3 %}
+                {% if isInscrit %}
+                    <a href="{{ path('sortie_unsubscribe', {'id': sortie.id}) }}"><input class="button" type="button" value="Désistement"></a>
+                {% else %}
+                    <a href="{{ path('sortie_subscribe', {'id': sortie.id}) }}"><input class="button" type="button" value="Inscription"></a>
+                {% endif %}
+            {% endif %}
+            {# si sortie non commencée, possibilité pour l'organisateur de l'annuler #}
+            {% if sortie.dateHeureDeb > today and sortie.organisateur == app.user %}
+                <a href="{{ path('sortie_delete', {'id': sortie.id}) }}"><input class="button" type="button" value="Annulation"></a>
+            {% endif %}
             <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
         </div>
     </div>
