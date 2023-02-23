@@ -619,3 +619,10 @@ form .pied-form button:hover{
     font-weight: bold;
 }
 
+.corps-formulaire a {
+    text-decoration: underline;
+}
+
+.corps-formulaire a:hover{
+    color:#005185 ;
+}
