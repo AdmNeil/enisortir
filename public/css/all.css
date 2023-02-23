@@ -252,7 +252,7 @@ label[for="filtre_home_site"], label[for^="profile_"], label[for^="sortie_"], la
   width: 100%;
 }
 
-.filtres, .sortie, .sortie-update { /*, .coches*/
+.filtres, .sortie, .sortie-update {
   display: grid;
   grid-gap: 1rem;
 }
@@ -265,11 +265,6 @@ label[for="filtre_home_site"], label[for^="profile_"], label[for^="sortie_"], la
 .custA {
   border-bottom: 2px dotted #808080;
 }
-
-/*
-.coches {
-    grid-template-columns: .3fr 1fr;
-}*/
 
 .open {
   position: absolute;
@@ -357,16 +352,23 @@ input[type="checkbox"] {
   padding-left: 2rem;
 }
 
-/*.form-login, .form-update-profile, .display-myprofile-container, .show-profile-container, .form-update-sortie {
-  background-color: #ffffffe0;
-  font-weight: bold;
-  padding: 30px;
-  border-radius: 10px;
-  border: solid #005185;
-  margin: auto;
-  /*width: 15rem;*_/
-  width: fit-content;
-}*/
+#errorNom:not(#errorNom:empty), #errorDate:not(#errorDate:empty), #errorSite:not(#errorSite:empty) {
+  background-color: #fff;
+  position: absolute;
+  top: -5rem;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .7);
+  color: #F00;
+  padding: 1rem;
+  z-index: 1;
+  border-radius: 5px;
+  left: 0;
+  right: 0;
+  cursor: pointer;
+}
+
+#errorSite:not(#errorSite:empty) {
+  top: -3.5rem;
+}
 
 .corps-formulaire {
   display: grid;

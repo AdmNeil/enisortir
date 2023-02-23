@@ -57,108 +57,124 @@ class Script {
         });
     }
 
-    home() {
-        document.getElementById(`filtreSubmit`).addEventListener(`click`, () => {
-            let errSite = document.getElementById('errorSite');
-            let errNom = document.getElementById('errorNom');
-            let errDate = document.getElementById('errorDate');
+    filter() {
+        let errSite = document.getElementById('errorSite');
+        let errNom = document.getElementById('errorNom');
+        let errDate = document.getElementById('errorDate');
 
-            errSite.textContent = "";
-            errNom.textContent = "";
-            errDate.textContent = "";
+        errSite.textContent = "";
+        errNom.textContent = "";
+        errDate.textContent = "";
 
-            const formData = new FormData();
+        const formData = new FormData();
 
-            formData.append("filtre", "");
-            formData.append('filtre_home_site', document.getElementById(`filtre_home_site`).value);
-            formData.append('filtreNom', document.getElementById(`filtreNom`).value);
-            formData.append('filtreDateMin', document.getElementById(`filtreDateMin`).value);
-            formData.append('filtreDateMax', document.getElementById(`filtreDateMax`).value);
-            formData.append('cocheOrganisateur', document.getElementById(`cocheOrganisateur`).checked);
-            formData.append('cocheInscrit', document.getElementById(`cocheInscrit`).checked);
-            formData.append('cocheNonInscrit', document.getElementById(`cocheNonInscrit`).checked);
-            formData.append('cochePassees', document.getElementById(`cochePassees`).checked);
+        formData.append("filtre", "");
+        formData.append('filtre_home_site', document.getElementById(`filtre_home_site`).value);
+        formData.append('filtreNom', document.getElementById(`filtreNom`).value);
+        formData.append('filtreDateMin', document.getElementById(`filtreDateMin`).value);
+        formData.append('filtreDateMax', document.getElementById(`filtreDateMax`).value);
+        formData.append('cocheOrganisateur', document.getElementById(`cocheOrganisateur`).checked);
+        formData.append('cocheInscrit', document.getElementById(`cocheInscrit`).checked);
+        formData.append('cocheNonInscrit', document.getElementById(`cocheNonInscrit`).checked);
+        formData.append('cochePassees', document.getElementById(`cochePassees`).checked);
 
-            fetch("./filtre", {
-                method: "POST", mode: "cors", credentials: "same-origin", body: formData
-            }).then(response => response.json()).then(body => {
-                if (body.error !== undefined) {
-                    if (body.error.site !== undefined) {
-                        errSite.textContent = body.error.site;
-                    }
-
-                    if (body.error.nom !== undefined) {
-                        errNom.textContent = body.error.nom;
-                    }
-
-                    if (body.error.date !== undefined) {
-                        errDate.textContent = body.error.date;
-                    }
-
-                    return;
+        fetch("./filtre", {
+            method: "POST", mode: "cors", credentials: "same-origin", body: formData
+        }).then(response => response.json()).then(body => {
+            if (body.error !== undefined) {
+                if (body.error.site !== undefined) {
+                    errSite.textContent = body.error.site;
                 }
 
-                if ('content' in document.createElement('template')) {
-                    let listSortie = document.getElementsByClassName(`main-list-sorties`)[0];
+                if (body.error.nom !== undefined) {
+                    errNom.textContent = body.error.nom;
+                }
 
-                    this.removeAll(listSortie);
+                if (body.error.date !== undefined) {
+                    errDate.textContent = body.error.date;
+                }
 
-                    if (body.length === 0) {
-                        let h3 = document.createElement(`h3`);
+                return;
+            }
 
-                        h3.textContent = "Aucune sortie ne correspond à vos critères";
+            if ('content' in document.createElement('template')) {
+                let listSortie = document.getElementsByClassName(`main-list-sorties`)[0];
 
-                        return listSortie.appendChild(h3);
-                    }
+                this.removeAll(listSortie);
 
-                    for (let objr of body) {
-                        let obj = JSON.parse(objr);
-                        let prtcp = obj[0];
-                        let cmplPrtcp = obj[1];
-                        const template = document.getElementsByTagName(`template`)[0];
-                        const clone = template.content.cloneNode(true);
-                        const custDate = new Date(prtcp.dateHeureDeb);
+                if (body.length === 0) {
+                    let h3 = document.createElement(`h3`);
 
-                        clone.querySelector(`[tpl="nom"]`).textContent = prtcp.nom;
-                        clone.querySelector(`[tpl="debut"]`).textContent = custDate.toLocaleDateString() + " à " + custDate.toLocaleTimeString([], {
-                            hour: '2-digit', minute: '2-digit'
-                        });
-                        clone.querySelector(`[tpl="cloture"]`).textContent = new Date(prtcp.dateCloture).toLocaleDateString();
-                        clone.querySelector(`[tpl="inscpla"]`).textContent = `${cmplPrtcp.countParticipant} / ${prtcp.nbInscriptionsMax}`;
-                        clone.querySelector(`[tpl="etat"]`).textContent = prtcp.etat.libelle;
-                        clone.querySelector(`[tpl="organisateur"]`).textContent = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
-                        clone.querySelector(`[tpl="organisateur"]`).title = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
-                        clone.querySelector(`[tpl="organisateur"]`).href = `/profile/show/${prtcp.organisateur.id}`;
-                        clone.querySelector(`[tpl="inscrit"]`).textContent = cmplPrtcp.isInscrit === 0 ? `Non` : `Oui`;
-                        let action = clone.querySelector(`[tpl="action"]`);
+                    h3.textContent = "Aucune sortie ne correspond à vos critères";
 
-                        for (const [i, uneAction] of Object.entries(cmplPrtcp.action)) {
-                            let a = document.createElement(`a`);
+                    return listSortie.appendChild(h3);
+                }
 
-                            a.href = uneAction.path + prtcp.id;
-                            a.textContent = uneAction.name;
-                            a.setAttribute(`class`, `custA`);
+                for (let objr of body) {
+                    let obj = JSON.parse(objr);
+                    let prtcp = obj[0];
+                    let cmplPrtcp = obj[1];
+                    const template = document.getElementsByTagName(`template`)[0];
+                    const clone = template.content.cloneNode(true);
+                    const custDate = new Date(prtcp.dateHeureDeb);
 
-                            if (parseInt(i) === cmplPrtcp.action.length - 1 && cmplPrtcp.action.length - 1) {
-                                let span = document.createElement(`span`);
+                    clone.querySelector(`[tpl="nom"]`).textContent = prtcp.nom;
+                    clone.querySelector(`[tpl="debut"]`).textContent = custDate.toLocaleDateString() + " à " + custDate.toLocaleTimeString([], {
+                        hour: '2-digit', minute: '2-digit'
+                    });
+                    clone.querySelector(`[tpl="cloture"]`).textContent = new Date(prtcp.dateCloture).toLocaleDateString();
+                    clone.querySelector(`[tpl="inscpla"]`).textContent = `${cmplPrtcp.countParticipant} / ${prtcp.nbInscriptionsMax}`;
+                    clone.querySelector(`[tpl="etat"]`).textContent = prtcp.etat.libelle;
+                    clone.querySelector(`[tpl="organisateur"]`).textContent = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
+                    clone.querySelector(`[tpl="organisateur"]`).title = `${prtcp.organisateur.prenom} ${prtcp.organisateur.nom}`;
+                    clone.querySelector(`[tpl="organisateur"]`).href = `/profile/show/${prtcp.organisateur.id}`;
+                    clone.querySelector(`[tpl="inscrit"]`).textContent = cmplPrtcp.isInscrit === 0 ? `Non` : `Oui`;
+                    let action = clone.querySelector(`[tpl="action"]`);
 
-                                span.textContent = " / ";
+                    for (const [i, uneAction] of Object.entries(cmplPrtcp.action)) {
+                        let a = document.createElement(`a`);
 
-                                action.appendChild(span);
-                            }
+                        a.href = uneAction.path + prtcp.id;
+                        a.textContent = uneAction.name;
+                        a.setAttribute(`class`, `custA`);
 
-                            action.appendChild(a);
+                        if (parseInt(i) === cmplPrtcp.action.length - 1 && cmplPrtcp.action.length - 1) {
+                            let span = document.createElement(`span`);
+
+                            span.textContent = " / ";
+
+                            action.appendChild(span);
                         }
 
-                        listSortie.appendChild(clone);
+                        action.appendChild(a);
                     }
 
-                } else {
-                    console.error("Vote navigateur ne peux pas gérer la balise template");
+                    listSortie.appendChild(clone);
                 }
 
-            }).catch(e => console.error(`Problème de réseau ou Parse: ${e}`));
-        })
+            } else {
+                console.error("Vote navigateur ne peux pas gérer la balise template");
+            }
+
+        }).catch(e => console.error(`Problème de réseau ou Parse: ${e}`));
+    }
+
+    home() {
+        if(document.getElementById(`filtre_home_site`).value !== 1 ||document.getElementById(`filtreNom`).value.trim().length !== 0 || document.getElementById(`filtreDateMin`).value !== "" || document.getElementById(`filtreDateMax`).value != null ) this.filter();
+
+        document.getElementById(`filtreSubmit`).addEventListener(`click`, () => this.filter());
+
+        document.getElementById(`errorNom`).addEventListener(`click`, e => {
+            e.target.textContent = "";
+        });
+
+        document.getElementById(`errorDate`).addEventListener(`click`, e => {
+            e.target.textContent = "";
+        });
+
+        document.getElementById(`errorSite`).addEventListener(`click`, e => {
+            e.target.textContent = "";
+        });
     }
 
     removeAll(container) {
