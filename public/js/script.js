@@ -8,6 +8,7 @@ class Script {
         this.getPathName = this.pathName === null ? "home" : this.pathName[0];
         this.is_function(this.getPathName);
         this.popup();
+        this.nav();
     }
 
     is_function(path) {
@@ -18,10 +19,39 @@ class Script {
         let listPopup = document.getElementsByClassName(`message`)[0].querySelectorAll(`.un-popup`);
 
         listPopup.forEach(el => {
-            el.addEventListener(`click`, () => {
-                el.remove();
-            })
+            el.addEventListener(`click`, () => el.remove())
         })
+    }
+
+    nav() {
+        function initScroll(_) {
+            let navContainer = document.getElementsByClassName(`nav-container`)[0];
+            let logoImg = document.getElementsByClassName(`logo-img`)[0];
+
+            if(window.scrollY > _) {
+                navContainer.style.setProperty("--background", "#ffffffd1");
+                logoImg.style.setProperty("--value1", "50px");
+            } else {
+                navContainer.style.setProperty("--background", "#fff");
+                logoImg.style.setProperty("--value1", "85px");
+            }
+        }
+
+        const main = document.getElementsByTagName(`main`)[0].offsetTop;
+
+        initScroll(main);
+
+        window.addEventListener(`scroll`, () => initScroll(main));
+
+        let nav2 = document.getElementsByClassName(`nav-2`)[0];
+
+        document.getElementsByClassName(`block-user-menu`)[0].addEventListener(`click`, () => {
+            if(nav2.style.getPropertyValue(`--value2`) === '' || nav2.style.getPropertyValue(`--value2`) === 'none') {
+                nav2.style.setProperty(`--value2`, `grid`);
+            } else {
+                nav2.style.setProperty(`--value2`, `none`);
+            }
+        });
     }
 
     home() {
