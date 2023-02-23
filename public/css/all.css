@@ -112,14 +112,15 @@ nav {
     display: none;
 }
 
-.main-list-filter {
+.main-list-sorties {
     display: grid;
-    grid-template-columns: repeat(auto-fit, 475px);
+    grid-template-columns: repeat(auto-fit, 486px);
     grid-gap: 2rem;
     justify-content: center;
+    margin-top: 1rem;
 }
 
-.listFilter {
+.case-sortie {
     display: inherit;
     grid-template-columns: 1fr 1fr;
     box-shadow: 0 0 3px rgba(0, 0, 0, .7);
@@ -129,31 +130,31 @@ nav {
     border-radius: 5px;
 }
 
-.article-column {
+.info-sortie {
     display: inherit;
     grid-template-columns: 1fr 1fr;
     border-bottom: 1px solid #ddd;
     align-content: center;
 }
 
-.article-column > * {
+.info-sortie > * {
     display: inherit;
     white-space: nowrap;
     align-items: center;
 }
 
-.article-column > p {
+.info-sortie > p {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     display: initial;
 }
 
-.article-cust-action {
+.info-action {
     display: block;
 }
 
-.article-cust-organisateur {
+.info-organisateur {
     font-size: 15px;
     font-style: italic;
     text-overflow: ellipsis;
@@ -338,7 +339,7 @@ form .corps-formulaire .groupe i{
     color: #005185 ;
 }
 
-form .pied-form button, .btn-enregitrer, .btn-annuler, .pied .button, .btn-modifier, .btn-retour {
+form .pied-form button, .btn-enregitrer, .btn-annuler, .pied .button, .btn-modifier, .btn-retour, .btn {
     margin-top: 10px;
     background-color: #005185;
     color: white;
@@ -370,7 +371,7 @@ form .pied-form button:hover{
     width: 60rem;
 }
 
-.cadre-sortie .label {
+.cadre-sortie .label, .cadre-filtres > label {
     font-weight: bold;
 }
 
@@ -468,4 +469,27 @@ form .pied-form button:hover{
 
 .display-myprofile-info, .show-profile-info{
     grid-gap: 3rem;
+}
+
+.entete-resultat {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin-top: 2rem;
+}
+
+/* CSS home page*/
+.groupe-filtres {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 1rem;
+}
+.cadre-filtres {
+    padding: 30px;
+    border-radius: 10px;
+    border: solid #005185;
+    margin: auto;
+}
+.filtres .groupe label {
+    font-weight: bold;
 }
