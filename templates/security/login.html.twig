@@ -4,20 +4,21 @@
 
 {% block body %}
 <form class="form-login" method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+
 
     <h1 class="h3 mb-3 font-weight-normal">Connectez-vous</h1>
     <div class="separation"></div>
+    {% if error %}
+        <div class="alert alert-danger">Pseudo ou mot de passe non valide.</div>
+    {% endif %}
     <div class="corps-formulaire">
         <div class="groupe">
-            <label for="inputUsername">Username</label>
+            <label for="inputUsername">Pseudo</label>
             <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
             <i class="fa-solid fa-user"></i>
         </div>
         <div class="groupe">
-            <label for="inputPassword">Password</label>
+            <label for="inputPassword">Mot de passe</label>
             <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <i class="fa-solid fa-lock"></i>
