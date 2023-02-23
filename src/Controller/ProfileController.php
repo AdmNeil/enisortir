@@ -20,9 +20,12 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProfileController extends AbstractController
 {
 
-
+    /**
+     * Afficher mon profil quand je suis connecté
+     * @param ParticipantRepository $participantRepository
+     * @return Response
+     */
     #[Route('/@me', name: '_myprofile')]
-    //Afficher mon profil quand je suis connecté
     public function myProfile(
         ParticipantRepository $participantRepository,
     ): Response
@@ -34,9 +37,16 @@ class ProfileController extends AbstractController
         );
     }
 
-
+    /**
+     * Modifier mes informations de profil
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param ParticipantRepository $participantRepository
+     * @param SluggerInterface $slugger
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @return Response
+     */
     #[Route('/update', name: '_update')]
-    //Modifier mes informations de profil
     public function update(
         EntityManagerInterface $em,
         Request                $request,
@@ -88,6 +98,11 @@ class ProfileController extends AbstractController
         );
     }
 
+    /**
+     * @param int $id
+     * @param ParticipantRepository $participantRepository
+     * @return Response
+     */
     #[Route('/show/{id}', name: '_show')]
     public function show(int                   $id,
                          ParticipantRepository $participantRepository,
