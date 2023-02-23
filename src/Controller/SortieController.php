@@ -13,6 +13,7 @@ use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Services\MailService;
 use DateTime;
 use App\Services\SortieUpdateCheck;
 use Doctrine\ORM\EntityManagerInterface;
@@ -96,14 +97,15 @@ class SortieController extends AbstractController
      * @param Lieu $lieu
      * @return bool
      */
-    public function testAsserts(Lieu $lieu): bool {
+    public function testAsserts(Lieu $lieu): bool
+    {
 
         $saisieValide = true;
         if (strlen($lieu->getVille()->getNom()) < 3 || strlen($lieu->getVille()->getNom()) > 30
             || !preg_match("/^[0-9]{4,5}+$/", $lieu->getVille()->getCodePostal())
             || strlen($lieu->getNom()) < 3 || strlen($lieu->getNom()) > 30
             || strlen($lieu->getRue()) < 3 || strlen($lieu->getRue()) > 30
-            ) {
+        ) {
             $saisieValide = false;
         }
         return $saisieValide;
@@ -135,7 +137,7 @@ class SortieController extends AbstractController
         $datecloture = new DateTime($findMySortie->getDateCloture()->format('Y-m-d h:i'));
         $dateStartEvent = new DateTime($findMySortie->getDateHeureDeb()->format('Y-m-d h:i'));
 
-        if(preg_match("/^[^1]$/i", $findMyEtat->getId()) || $datecloture >= $dateStartEvent ) {
+        if (preg_match("/^[^1]$/i", $findMyEtat->getId()) || $datecloture >= $dateStartEvent) {
             $this->addFlash('error', "L'état du formulaire Sortie ne peut être modifié ou annulé");
             return $this->redirectToRoute('home_index');
         }
@@ -244,7 +246,7 @@ class SortieController extends AbstractController
         }
         $etatSortie = $sortie->getEtat()->getId();
         if ($etatSortie == 1 || $etatSortie == 7) {
-            $this->addFlash('error', 'Consultation impossible - sortie à l\'état ' .$sortie->getEtat()->getLibelle(). ' !');
+            $this->addFlash('error', 'Consultation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
             return $this->redirectToRoute('home_index');
         }
         return $this->render(
@@ -389,7 +391,7 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->findOneBy(["id" => $id]);
 
         if (is_null($sortie)) {
-            $this->addFlash('error', 'Publication impossible - sortie ('.$id.') inexistante !');
+            $this->addFlash('error', 'Publication impossible - sortie (' . $id . ') inexistante !');
             return $this->redirectToRoute('home_index');
         }
         $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
@@ -410,6 +412,56 @@ class SortieController extends AbstractController
         }
 
         $this->addFlash('success', 'Sortie publiée');
+        return $this->redirectToRoute('home_index');
+    }
+
+    /** Passage à l'état "Ouvert/Cloturé" d'une sortie à l'état "Annulé"
+     * par l'utilisateur connecté si c'est l'organisateur
+     * @param int $id
+     * @param SortieRepository $sortieRepository
+     * @param ParticipantRepository $participantRepository
+     * @param EtatRepository $etatRepository
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
+    #[Route('/cancel/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
+    public function cancel(int                    $id,
+                           SortieRepository       $sortieRepository,
+                           ParticipantRepository  $participantRepository,
+                           EtatRepository         $etatRepository,
+                           EntityManagerInterface $em,
+                           MailService            $mailService): Response
+    {
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+
+        if (is_null($sortie)) {
+            $this->addFlash('error', 'Annulation impossible - sortie (' . $id . ') inexistante !');
+            return $this->redirectToRoute('home_index');
+        }
+        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+        if ($utilisateur !== $sortie->getOrganisateur()) {
+            $this->addFlash('error', 'Annulation réalisable uniquement par l\'organisateur !');
+            return $this->redirectToRoute('home_index');
+        }
+
+        // Annulation possible seulement si la sortie est à l'état "2-Ouvert" ou "3-Clôturé"
+        if ($sortie->getEtat()->getId() === 2 || $sortie->getEtat()->getId() === 3) {
+            $etatOuvert = $etatRepository->findOneBy(["id" => 6]);  //passage à l'état "Annulé"
+            $sortie->setEtat($etatOuvert);
+            $em->persist($sortie);
+            $em->flush();
+
+            //Envoi d'un mail automatique d'annulation de l'organisateur aux participants
+            foreach ($sortie->getParticipants() as $participant) {
+                $mailService->sendMailCancel($utilisateur->getMail(), $participant->getMail(), $sortie);
+            }
+
+        } else {
+            $this->addFlash('error', 'Annulation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
+            return $this->redirectToRoute('home_index');
+        }
+
+        $this->addFlash('success', 'Sortie annulée');
         return $this->redirectToRoute('home_index');
     }
 
