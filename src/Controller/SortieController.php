@@ -29,7 +29,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
 {
-    /**
+
+    /** Page de création d'une sortie
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param VilleRepository $villeRepository
+     * @param ParticipantRepository $participantRepository
+     * @return Response
      * @throws NonUniqueResultException
      */
     #[Route('/@new', name: '_index')]
@@ -99,7 +106,6 @@ class SortieController extends AbstractController
      */
     public function testAsserts(Lieu $lieu): bool
     {
-
         $saisieValide = true;
         if (strlen($lieu->getVille()->getNom()) < 3 || strlen($lieu->getVille()->getNom()) > 30
             || !preg_match("/^[0-9]{4,5}+$/", $lieu->getVille()->getCodePostal())
@@ -111,13 +117,16 @@ class SortieController extends AbstractController
         return $saisieValide;
     }
 
-    /*#[Route('/{id}', name: '_update', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function update(int $id, EntityManagerInterface $em, Request $request, EtatRepository $etatRepository, SortieRepository $sortieRepository, LieuRepository $lieuRepository, VilleRepository $villeRepository, ParticipantRepository $participantRepository): Response
-    {
-
-    }*/
-
-    /**
+    /** Page de modification d'une sortie
+     * @param int $id
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param SortieRepository $sortieRepository
+     * @param LieuRepository $lieuRepository
+     * @param VilleRepository $villeRepository
+     * @param ParticipantRepository $participantRepository
+     * @return Response
      * @throws NonUniqueResultException
      * @throws \Exception
      */
@@ -176,7 +185,7 @@ class SortieController extends AbstractController
                     $em->remove($sortieForm->getData());
                     $em->flush();
 
-                    $this->addFlash('info', 'Annulation de la sortie');
+                    $this->addFlash('info', 'Sortie supprimée');
                     return $this->redirectToRoute('home_index');
                 } else {
                     return $this->redirectToRoute('sortie_delete', ['id' => $id]);
@@ -201,17 +210,19 @@ class SortieController extends AbstractController
         $findMySortie = $sortieRepository->findOneBy(['organisateur' => $user, 'id' => $id]);
 
         if ($findMySortie === null) {
-            $this->addFlash('error', "Vous n'êtes pas l'organisateur de cette sortie");
+            $this->addFlash('error', "Vous n'êtes pas l'organisateur(trice) de cette sortie");
             return $this->redirectToRoute('home_index');
         }
 
         $findMyEtat = $etatRepository->findOneBy(['id' => $findMySortie->getEtat()->getId()]);
 
-        $datecloture = new DateTime($findMySortie->getDateCloture()->format('Y-m-d h:i'));
-        $dateStartEvent = new DateTime($findMySortie->getDateHeureDeb()->format('Y-m-d h:i'));
+//        $datecloture = new DateTime($findMySortie->getDateCloture()->format('Y-m-d h:i'));
+//        $dateStartEvent = new DateTime($findMySortie->getDateHeureDeb()->format('Y-m-d h:i'));
 
-        if ($findMyEtat->getId() !== 2 || $datecloture >= $dateStartEvent) {
-            $this->addFlash('error', "L'état du formulaire Sortie ne peut être annulé");
+        // si sortie non commencée, possibilité pour l'organisateur de l'annuler
+        if ($findMyEtat->getId() !== 2 || $findMyEtat->getId() !== 3 /* || $datecloture >= $dateStartEvent */) {
+//            $this->addFlash('error', "L'état du formulaire Sortie ne peut être annulé");
+            $this->addFlash('error', 'Annulation impossible : sortie à l\'état ' . $findMySortie->getEtat()->getLibelle() . ' /  !');
             return $this->redirectToRoute('home_index');
         }
 
@@ -233,10 +244,19 @@ class SortieController extends AbstractController
         return $this->render('sortie/delete.html.twig', compact('sortieForm', 'findMySortie'));
     }
 
+    /** Affichage du détail d'un sortie
+     * @param int $id
+     * @param SortieRepository $sortieRepository
+     * @param ParticipantRepository $participantRepository
+     * @param SortieUpdateCheck $sortieUpdateCheck
+     * @return Response
+     */
     #[Route('/detail/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function select(
-        int              $id,
-        SortieRepository $sortieRepository
+        int                   $id,
+        SortieRepository      $sortieRepository,
+        ParticipantRepository $participantRepository,
+        SortieUpdateCheck     $sortieUpdateCheck
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(["id" => $id]);
@@ -249,9 +269,13 @@ class SortieController extends AbstractController
             $this->addFlash('error', 'Consultation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
             return $this->redirectToRoute('home_index');
         }
+        //L'utilisateur connecté n'est pas déjà inscrit
+        $utilisateur = $participantRepository->findOneBy(["username" => $this->getUser()->getUserIdentifier()]);
+        $isInscrit = $sortieUpdateCheck->dejaInscrit($utilisateur, $sortie);
+
         return $this->render(
             'sortie/detail.html.twig',
-            compact('sortie')
+            compact('sortie', 'isInscrit')
         );
     }
 
@@ -270,7 +294,8 @@ class SortieController extends AbstractController
                               SortieRepository       $sortieRepository,
                               EtatRepository         $etatRepository,
                               SortieUpdateCheck      $sortieUpdateCheck,
-                              EntityManagerInterface $em): Response
+                              EntityManagerInterface $em
+    ): Response
     {
         $sortie = $sortieRepository->findOneBy(["id" => $id]);
 
@@ -415,7 +440,7 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('home_index');
     }
 
-    /** Passage à l'état "Ouvert/Cloturé" d'une sortie à l'état "Annulé"
+    /** Passage à l'état "Annulé" d'une sortie à l'état "Ouvert/Cloturé"
      * par l'utilisateur connecté si c'est l'organisateur
      * @param int $id
      * @param SortieRepository $sortieRepository
@@ -443,19 +468,16 @@ class SortieController extends AbstractController
             $this->addFlash('error', 'Annulation réalisable uniquement par l\'organisateur !');
             return $this->redirectToRoute('home_index');
         }
-
         // Annulation possible seulement si la sortie est à l'état "2-Ouvert" ou "3-Clôturé"
         if ($sortie->getEtat()->getId() === 2 || $sortie->getEtat()->getId() === 3) {
             $etatOuvert = $etatRepository->findOneBy(["id" => 6]);  //passage à l'état "Annulé"
             $sortie->setEtat($etatOuvert);
             $em->persist($sortie);
             $em->flush();
-
             //Envoi d'un mail automatique d'annulation de l'organisateur aux participants
             foreach ($sortie->getParticipants() as $participant) {
                 $mailService->sendMailCancel($utilisateur->getMail(), $participant->getMail(), $sortie);
             }
-
         } else {
             $this->addFlash('error', 'Annulation impossible - sortie à l\'état ' . $sortie->getEtat()->getLibelle() . ' !');
             return $this->redirectToRoute('home_index');
