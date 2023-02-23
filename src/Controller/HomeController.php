@@ -146,7 +146,7 @@ class HomeController extends AbstractController
                 $temp->action = [];
 
                 foreach ($sorty->getParticipants() as $participant) {
-                    if($participant->getNom() == $sorty->getOrganisateur()->getNom() && $participant->getPrenom() == $sorty->getOrganisateur()->getPrenom()) {
+                    if ($participant === $utilisateur) {
                         $temp->isInscrit = 1;
                     }
                 }

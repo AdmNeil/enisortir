@@ -91,7 +91,7 @@
             {% endif %}
             {# si sortie non commencée, possibilité pour l'organisateur de l'annuler #}
             {% if sortie.dateHeureDeb > today and sortie.organisateur == app.user %}
-                <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}"><input class="button" type="button" value="Annulation"></a>
+                <a href="{{ path('sortie_delete', {'id': sortie.id}) }}"><input class="button" type="button" value="Annulation"></a>
             {% endif %}
             <a href="{{ path('home_index') }}"><input class="button" type="button" value="Retour"></a>
         </div>

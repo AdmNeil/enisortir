@@ -52,6 +52,8 @@ class Sortie
 
     #[Assert\Type(type:\DateTimeInterface::class,
         message:'La date de clôture des inscriptions doit être une date-heure.')]
+    #[Assert\GreaterThan('today',
+        message: 'La clôture des inscriptions doit être au plus tôt demain.')]
     #[Assert\LessThan([],
         propertyPath: "dateHeureDeb",
         message: 'La clôture des inscriptions doit avoir lieu avant le début de la sortie.')]
