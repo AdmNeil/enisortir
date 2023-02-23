@@ -819,3 +819,14 @@ form .pied-form button:hover {
     color: red;
     margin-top: 1rem;
 }
+
+.errors-0 {
+  background-color: #ffffffbd;
+  border: 2px dashed red;
+  border-radius: 5px;
+  display: grid;
+  align-items: center;
+  width: max-content;
+  padding: 3rem;
+  margin: auto;
+}
