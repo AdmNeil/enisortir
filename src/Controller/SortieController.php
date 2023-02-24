@@ -109,7 +109,7 @@ class SortieController extends AbstractController
         $saisieValide = true;
         if (strlen($lieu->getVille()->getNom()) < 3 || strlen($lieu->getVille()->getNom()) > 30
             || !preg_match("/^[0-9]{4,5}+$/", $lieu->getVille()->getCodePostal())
-            || strlen($lieu->getNom()) < 3 || strlen($lieu->getNom()) > 30
+            || strlen($lieu->getNom() == null ? "" : $lieu->getNom()) < 3 || strlen($lieu->getNom() == null ? "" : $lieu->getNom()) > 30
             || strlen($lieu->getRue()) < 3 || strlen($lieu->getRue()) > 30
         ) {
             $saisieValide = false;
