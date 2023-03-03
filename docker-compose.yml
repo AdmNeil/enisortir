@@ -1,0 +1,35 @@
+version: '3'
+
+# link https://github.com/emalherbi-zz/docker/blob/main/php8/Dockerfile
+
+services:
+  bdd:
+    container_name: mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Admin@44
+      MYSQL_DATABASE: enisortir
+    expose:
+      - "3306"
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  app:
+    container_name: app
+    image: test_docker
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app/
+    links:
+      - bdd
+
+volumes:
+  db-data:
+  ###> doctrine/doctrine-bundle ###
+  database_data:
+  ###< doctrine/doctrine-bundle ###
